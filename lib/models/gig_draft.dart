@@ -54,6 +54,10 @@ class GigDraft {
   /// uids of who plays; the tip is shared over them, or entered by them.
   final List<String> players;
 
+  /// No agreed price: the band plays for tips alone (the rules allow a price
+  /// of 0 only with a tip).
+  bool get tipOnly => priceMinor == 0;
+
   /// "Sala Kristal, Kraljevo", leaving out what is empty.
   String get place => [venue, city].where((s) => s.isNotEmpty).join(', ');
 

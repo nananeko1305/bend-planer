@@ -48,6 +48,10 @@ concert, other), venue, city, address, the client's phone, agreed price in
 EUR or RSD, deposit and who holds it, tip yes/no, notes. With a tip: how it
 is shared and who plays.
 
+- **Samo za bakšiš (tips only):** a gig without an agreed price, stored as
+  `priceMinor` 0 (the rules allow 0 only with a tip, and then no deposit). It
+  shows "Za bakšiš" instead of a price, and the report counts it with 0 agreed
+  plus its tip.
 - Upcoming = today or later. A played gig with a tip waits on the home screen
   ("Čeka bakšiš") until the tip is complete; 0 is a valid tip.
 - **Tips are shared one of two ways**, the band's default set by a leader

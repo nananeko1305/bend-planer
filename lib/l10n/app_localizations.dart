@@ -1615,6 +1615,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tips by member'**
   String get tipsByMember;
+
+  /// No description provided for @tipOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips only'**
+  String get tipOnly;
+
+  /// No description provided for @tipOnlyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No agreed price: the band plays for tips.'**
+  String get tipOnlyHint;
+
+  /// No description provided for @tipOnlyPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'For tips'**
+  String get tipOnlyPrice;
 }
 
 class _AppLocalizationsDelegate

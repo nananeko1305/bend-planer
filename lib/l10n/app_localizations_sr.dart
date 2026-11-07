@@ -857,4 +857,13 @@ class AppLocalizationsSr extends AppLocalizations {
 
   @override
   String get tipsByMember => 'Bakšiš po članu';
+
+  @override
+  String get tipOnly => 'Samo za bakšiš';
+
+  @override
+  String get tipOnlyHint => 'Bez dogovorene cene: bend svira za bakšiš.';
+
+  @override
+  String get tipOnlyPrice => 'Za bakšiš';
 }

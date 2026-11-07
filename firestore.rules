@@ -169,7 +169,8 @@ service cloud.firestore {
         && shortText(d.venue, 120) && shortText(d.city, 120)
         && shortText(d.address, 120) && shortText(d.clientName, 120)
         && shortText(d.clientPhone, 120)
-        && validMoney(d.priceMinor) && d.priceMinor > 0
+        // No agreed price only for a gig played for tips alone.
+        && validMoney(d.priceMinor) && (d.priceMinor > 0 || d.hasTip == true)
         && d.currency in ['EUR', 'RSD']
         && validMoney(d.depositMinor) && d.depositMinor <= d.priceMinor
         && shortText(d.depositHolder, 128)

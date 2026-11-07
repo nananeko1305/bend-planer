@@ -21,8 +21,10 @@ String gigTypeLabel(AppLocalizations t, GigType type) => switch (type) {
 String moneyOf(BuildContext context, int minor, Currency currency) =>
     formatMoney(minor, currency, intlLocale(context));
 
-String priceOf(BuildContext context, Gig g) =>
-    moneyOf(context, g.priceMinor, g.currency);
+/// The agreed price, or "Za bakšiš" for a gig played for tips alone.
+String priceOf(BuildContext context, Gig g) => g.tipOnly
+    ? AppLocalizations.of(context).tipOnlyPrice
+    : moneyOf(context, g.priceMinor, g.currency);
 
 /// "Wedding, Sala Kristal, Kraljevo": what the gig is, in one line.
 String gigSummary(AppLocalizations t, Gig g) => [

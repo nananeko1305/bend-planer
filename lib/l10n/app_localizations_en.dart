@@ -851,4 +851,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tipsByMember => 'Tips by member';
+
+  @override
+  String get tipOnly => 'Tips only';
+
+  @override
+  String get tipOnlyHint => 'No agreed price: the band plays for tips.';
+
+  @override
+  String get tipOnlyPrice => 'For tips';
 }

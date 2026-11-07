@@ -53,6 +53,9 @@ class _GigFormScreenState extends State<GigFormScreen> {
   late Currency _currency = _start.currency;
   late bool _hasTip = _start.hasTip;
 
+  /// No agreed price: played for tips alone, so there is always a tip.
+  late bool _tipOnly = widget.gig != null && _start.tipOnly;
+
   /// A new gig starts from the band's way of sharing and the whole band.
   late TipSplit _split = widget.gig != null
       ? _start.tipSplit
@@ -133,7 +136,7 @@ class _GigFormScreenState extends State<GigFormScreen> {
   }
 
   void _save() {
-    final noPlayers = _hasTip && _players.isEmpty;
+    final noPlayers = (_tipOnly || _hasTip) && _players.isEmpty;
     if (noPlayers != _playersError) setState(() => _playersError = noPlayers);
     if (!_form.currentState!.validate() || noPlayers) return;
     final draft = GigDraft(
@@ -147,11 +150,13 @@ class _GigFormScreenState extends State<GigFormScreen> {
       // No field for it any more; a gig that has one keeps it.
       clientName: _start.clientName,
       clientPhone: _phone.text.trim(),
-      priceMinor: parseMoney(_price.text)!,
+      priceMinor: _tipOnly ? 0 : parseMoney(_price.text)!,
       currency: _currency,
-      depositMinor: _deposit ? parseMoney(_depositAmount.text)! : 0,
-      depositHolder: _deposit ? _holder : '',
-      hasTip: _hasTip,
+      depositMinor: !_tipOnly && _deposit
+          ? parseMoney(_depositAmount.text)!
+          : 0,
+      depositHolder: !_tipOnly && _deposit ? _holder : '',
+      hasTip: _tipOnly || _hasTip,
       notes: _notes.text.trim(),
       tipSplit: _split,
       players: [
@@ -251,23 +256,46 @@ class _GigFormScreenState extends State<GigFormScreen> {
             gap,
             _text(_phone, t.clientPhone, Icons.phone_rounded, phone: true),
             section(t.sectionMoney),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    t.tipOnly,
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  subtitle: _tipOnly ? Text(t.tipOnlyHint) : null,
+                  value: _tipOnly,
+                  onChanged: (v) => setState(() {
+                    _tipOnly = v;
+                    if (v) _hasTip = true;
+                  }),
+                ),
+              ),
+            ),
+            gap,
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _price,
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
+                // Without a price the currency is still the tip's.
+                if (_tipOnly)
+                  const Spacer()
+                else
+                  Expanded(
+                    child: TextFormField(
+                      controller: _price,
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      style: c
+                          .display(22, weight: FontWeight.w800)
+                          .copyWith(shadows: const []),
+                      decoration: InputDecoration(labelText: t.price),
+                      validator: (v) =>
+                          parseMoney(v ?? '') == null ? t.enterAmount : null,
                     ),
-                    style: c
-                        .display(22, weight: FontWeight.w800)
-                        .copyWith(shadows: const []),
-                    decoration: InputDecoration(labelText: t.price),
-                    validator: (v) =>
-                        parseMoney(v ?? '') == null ? t.enterAmount : null,
                   ),
-                ),
                 const SizedBox(width: 10),
                 Padding(
                   padding: const EdgeInsets.only(top: 6),
@@ -278,24 +306,26 @@ class _GigFormScreenState extends State<GigFormScreen> {
                 ),
               ],
             ),
-            gap,
-            _DepositSection(
-              on: _deposit,
-              amount: _depositAmount,
-              holder: _holder,
-              members: widget.data.members,
-              price: () => parseMoney(_price.text),
-              onToggle: (v) => setState(() => _deposit = v),
-              onHolder: (v) => setState(() => _holder = v),
-            ),
-            const SizedBox(height: 18),
-            SectionLabel(t.tipQuestion),
-            const SizedBox(height: 8),
-            TipToggle(
-              value: _hasTip,
-              onChanged: (v) => setState(() => _hasTip = v),
-            ),
-            if (_hasTip) ...[
+            if (!_tipOnly) ...[
+              gap,
+              _DepositSection(
+                on: _deposit,
+                amount: _depositAmount,
+                holder: _holder,
+                members: widget.data.members,
+                price: () => parseMoney(_price.text),
+                onToggle: (v) => setState(() => _deposit = v),
+                onHolder: (v) => setState(() => _holder = v),
+              ),
+              const SizedBox(height: 18),
+              SectionLabel(t.tipQuestion),
+              const SizedBox(height: 8),
+              TipToggle(
+                value: _hasTip,
+                onChanged: (v) => setState(() => _hasTip = v),
+              ),
+            ],
+            if (_tipOnly || _hasTip) ...[
               const SizedBox(height: 16),
               SectionLabel(t.tipSplitLabel),
               const SizedBox(height: 8),

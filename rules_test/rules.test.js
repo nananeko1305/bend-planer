@@ -315,3 +315,14 @@ describe('tips: shared equally or each their own', () => {
     await assertSucceeds(updateDoc(doc(db, 'gigs/equal'), tipNow({ tipMinor: 1000, tipBy: 'ana' })));
   });
 });
+
+describe('tips only', () => {
+  test('no agreed price is allowed only with a tip, and then no deposit', async () => {
+    await seedBand();
+    const db = as('ana');
+    const tipsOnly = { priceMinor: 0, depositMinor: 0, depositHolder: '' };
+    await assertSucceeds(setDoc(doc(db, 'gigs/t1'), gig('ana', tipsOnly)));
+    await assertFails(setDoc(doc(db, 'gigs/t2'), gig('ana', { ...tipsOnly, hasTip: false })));
+    await assertFails(setDoc(doc(db, 'gigs/t3'), gig('ana', { ...tipsOnly, depositMinor: 1000 })));
+  });
+});
