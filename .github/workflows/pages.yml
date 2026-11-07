@@ -21,9 +21,6 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
-env:
-  APK_NAME: bend-planer.apk
-
 jobs:
   deploy:
     name: Deploy download page
@@ -61,7 +58,11 @@ jobs:
           pip install --quiet qrcode
           VERSION="${TAG#v}" \
           DATE="$(TZ=Europe/Belgrade date -d "$PUBLISHED" +%d.%m.%Y.)" \
-          DOWNLOAD_URL="https://github.com/$GITHUB_REPOSITORY/releases/latest/download/$APK_NAME" \
+          # The release's versioned APK (bend-planer-1.3.2.apk); a release from
+          # before 1.3.2 has only bend-planer.apk.
+          APK_URL=$(gh release view --repo "$GITHUB_REPOSITORY" --json assets -q \
+            '([.assets[] | select(.name | test("-[0-9.]+\\.apk$"))] + [.assets[] | select(.name | endswith(".apk"))])[0].url')
+          DOWNLOAD_URL="$APK_URL" \
             bash .github/pages/build.sh
           curl -fsS "${{ steps.pages.outputs.base_url }}/version.json" -o _site/version.json
 
