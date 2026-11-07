@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import '../models/app_user.dart';
 import '../models/day_key.dart';
 import '../models/gig.dart';
+import 'band_settings_repository.dart';
 import 'gig_repository.dart';
 import 'user_repository.dart';
 
@@ -19,6 +20,7 @@ class LiveData extends ChangeNotifier {
       _usersById = {for (final u in v) u.uid: u};
     });
     _watch(GigRepository.instance.watchAll, (v) => gigs = v);
+    _watch(BandSettingsRepository.instance.watch, (v) => band = v);
   }
 
   static const _firstRetry = Duration(seconds: 5);
@@ -30,6 +32,9 @@ class LiveData extends ChangeNotifier {
 
   List<AppUser>? users;
   List<Gig>? gigs;
+
+  /// The band's defaults; the default itself until read.
+  BandSettings band = const BandSettings();
   Object? error;
   Map<String, AppUser> _usersById = const {};
 

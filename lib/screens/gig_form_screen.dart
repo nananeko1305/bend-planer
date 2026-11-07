@@ -12,6 +12,7 @@ import '../services/gig_repository.dart';
 import '../services/live_data.dart';
 import '../theme/app_colors.dart';
 import '../widgets/gig_form_fields.dart';
+import '../widgets/tip_share_fields.dart';
 import '../widgets/gig_format.dart';
 import '../widgets/skin_widgets.dart';
 
@@ -51,12 +52,20 @@ class _GigFormScreenState extends State<GigFormScreen> {
   late GigType _type = _start.type;
   late Currency _currency = _start.currency;
   late bool _hasTip = _start.hasTip;
+
+  /// A new gig starts from the band's way of sharing and the whole band.
+  late TipSplit _split = widget.gig != null
+      ? _start.tipSplit
+      : widget.data.band.tipSplit;
+  late Set<String> _players = widget.gig != null && _start.players.isNotEmpty
+      ? {..._start.players}
+      : {for (final m in widget.data.members) m.uid};
+  bool _playersError = false;
   late bool _deposit = _start.depositMinor > 0;
   late String _holder = _start.depositHolder;
   late final _venue = TextEditingController(text: _start.venue);
   late final _city = TextEditingController(text: _start.city);
   late final _address = TextEditingController(text: _start.address);
-  late final _client = TextEditingController(text: _start.clientName);
   late final _phone = TextEditingController(text: _start.clientPhone);
   late final _notes = TextEditingController(text: _start.notes);
   late final _price = TextEditingController(
@@ -68,7 +77,7 @@ class _GigFormScreenState extends State<GigFormScreen> {
 
   @override
   void dispose() {
-    for (final c in [_venue, _city, _address, _client, _phone, _notes]) {
+    for (final c in [_venue, _city, _address, _phone, _notes]) {
       c.dispose();
     }
     _price.dispose();
@@ -112,8 +121,21 @@ class _GigFormScreenState extends State<GigFormScreen> {
       if (g.date == _date && !g.cancelled && g.id != widget.gig?.id) g,
   ];
 
+  /// The band, plus anyone ticked who has left since, in the band's order.
+  List<(String, String)> _playerOptions() {
+    final members = widget.data.members;
+    final known = {for (final m in members) m.uid};
+    return [
+      for (final m in members) (m.uid, m.displayName),
+      for (final uid in _players)
+        if (!known.contains(uid)) (uid, widget.data.nameOf(uid)),
+    ];
+  }
+
   void _save() {
-    if (!_form.currentState!.validate()) return;
+    final noPlayers = _hasTip && _players.isEmpty;
+    if (noPlayers != _playersError) setState(() => _playersError = noPlayers);
+    if (!_form.currentState!.validate() || noPlayers) return;
     final draft = GigDraft(
       date: _date,
       start: _time,
@@ -122,7 +144,8 @@ class _GigFormScreenState extends State<GigFormScreen> {
       venue: _venue.text.trim(),
       city: _city.text.trim(),
       address: _address.text.trim(),
-      clientName: _client.text.trim(),
+      // No field for it any more; a gig that has one keeps it.
+      clientName: _start.clientName,
       clientPhone: _phone.text.trim(),
       priceMinor: parseMoney(_price.text)!,
       currency: _currency,
@@ -130,6 +153,11 @@ class _GigFormScreenState extends State<GigFormScreen> {
       depositHolder: _deposit ? _holder : '',
       hasTip: _hasTip,
       notes: _notes.text.trim(),
+      tipSplit: _split,
+      players: [
+        for (final (uid, _) in _playerOptions())
+          if (_players.contains(uid)) uid,
+      ],
     );
     final repo = GigRepository.instance;
     final uid = widget.profile.uid;
@@ -221,8 +249,6 @@ class _GigFormScreenState extends State<GigFormScreen> {
             gap,
             _text(_address, t.address, Icons.map_rounded),
             gap,
-            _text(_client, t.clientName, Icons.person_rounded),
-            gap,
             _text(_phone, t.clientPhone, Icons.phone_rounded, phone: true),
             section(t.sectionMoney),
             Row(
@@ -269,14 +295,27 @@ class _GigFormScreenState extends State<GigFormScreen> {
               value: _hasTip,
               onChanged: (v) => setState(() => _hasTip = v),
             ),
-            if (_hasTip)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  t.tipHint,
-                  style: TextStyle(color: c.muted, fontSize: 13.5),
-                ),
+            if (_hasTip) ...[
+              const SizedBox(height: 16),
+              SectionLabel(t.tipSplitLabel),
+              const SizedBox(height: 8),
+              TipSplitToggle(
+                value: _split,
+                onChanged: (v) => setState(() => _split = v),
               ),
+              const SizedBox(height: 16),
+              SectionLabel(t.whoPlays),
+              const SizedBox(height: 8),
+              PlayersPicker(
+                options: _playerOptions(),
+                selected: _players,
+                error: _playersError,
+                onChanged: (v) => setState(() {
+                  _players = v;
+                  if (v.isNotEmpty) _playersError = false;
+                }),
+              ),
+            ],
             section(t.sectionNotes),
             TextFormField(
               controller: _notes,

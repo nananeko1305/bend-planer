@@ -290,7 +290,7 @@ class AppLocalizationsSr extends AppLocalizations {
   String get sectionWhere => 'Gde i za koga';
 
   @override
-  String get sectionMoney => 'Pare';
+  String get sectionMoney => 'Cena';
 
   @override
   String get sectionNotes => 'Napomena';
@@ -317,9 +317,6 @@ class AppLocalizationsSr extends AppLocalizations {
 
   @override
   String get address => 'Adresa (nije obavezno)';
-
-  @override
-  String get clientName => 'Naručilac (nije obavezno)';
 
   @override
   String get clientPhone => 'Telefon naručioca (nije obavezno)';
@@ -814,4 +811,50 @@ class AppLocalizationsSr extends AppLocalizations {
 
   @override
   String get welcomeSampleCity => 'Beograd';
+
+  @override
+  String get tipSplitLabel => 'Kako delite bakšiš';
+
+  @override
+  String get tipSplitEqual => 'Delimo jednako';
+
+  @override
+  String get tipSplitOwn => 'Svako svoje';
+
+  @override
+  String get tipSplitEqualHint =>
+      'Posle svirke neko upiše ukupan bakšiš, a on se deli jednako na one koji su svirali.';
+
+  @override
+  String get tipSplitOwnHint =>
+      'Posle svirke svako upiše koliko je on dobio; bakšiš benda je zbir.';
+
+  @override
+  String get tipSplitSettingsHint =>
+      'Za nove tezge; kod svake tezge može da se promeni.';
+
+  @override
+  String get tipSplitLeaderOnly => 'Ovo bira šef benda.';
+
+  @override
+  String get whoPlays => 'Ko svira';
+
+  @override
+  String get pickPlayers => 'Čekiraj bar jednog člana.';
+
+  @override
+  String tipTotal(String amount) {
+    return 'Ukupno $amount';
+  }
+
+  @override
+  String tipForPlayer(String name) {
+    return 'Bakšiš: $name';
+  }
+
+  @override
+  String get tipNotEntered => 'nije upisano';
+
+  @override
+  String get tipsByMember => 'Bakšiš po članu';
 }

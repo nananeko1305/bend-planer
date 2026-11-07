@@ -44,12 +44,22 @@ name. Auth accounts are never deleted from the app.
 ## Gigs
 
 Date, start and optional end, type (wedding, birthday, kafana, company party,
-concert, other), venue, city, address, client and phone, agreed price in EUR
-or RSD, deposit and who holds it, tip yes/no, notes.
+concert, other), venue, city, address, the client's phone, agreed price in
+EUR or RSD, deposit and who holds it, tip yes/no, notes. With a tip: how it
+is shared and who plays.
 
-- Upcoming = today or later. A played gig with a tip and no amount yet waits
-  on the home screen ("Čeka bakšiš") until someone enters it; 0 is a valid
-  tip.
+- Upcoming = today or later. A played gig with a tip waits on the home screen
+  ("Čeka bakšiš") until the tip is complete; 0 is a valid tip.
+- **Tips are shared one of two ways**, the band's default set by a leader
+  (Settings), changeable per gig:
+  - *Delimo jednako* (`equal`): someone enters the band's total; it is split
+    evenly among the players ticked on the gig, a leftover cent each to the
+    first ones so it adds up exactly.
+  - *Svako svoje* (`own`): each player's own amount, entered by anyone in the
+    band (for themselves, or for a player without the app); the band's tip is
+    the sum. Complete once every player has an entry.
+- The report shows the band's tips and what each member got (shares and own
+  entries together).
 - Cancelling keeps the gig in the history, struck through, out of the
   report. Delete is for gigs entered by mistake and tells nobody.
 - The monthly report is computed from the gigs every time, never stored:
@@ -61,11 +71,12 @@ or RSD, deposit and who holds it, tip yes/no, notes.
 | Collection | Fields |
 |---|---|
 | `users/{uid}` | `email`, `role` (`owner`/`admin`/`member`), `disabled`, `firstName`, `lastName`, `instrument`, `phone`, `announced`, `createdAt` |
-| `gigs/{id}` | `ownerId`, `date` (yyyy-MM-dd), `start`, `end` (HH:mm or ''), `type`, `venue`, `city`, `address`, `clientName`, `clientPhone`, `priceMinor`, `currency`, `depositMinor`, `depositHolder` (uid or ''), `hasTip`, `tipMinor` (null until entered), `tipBy`, `notes`, `cancelled`, `rev`, `updatedBy`, `createdAt`, `updatedAt`; worker only: `pushRev`, `tipAnnounced`, `remindedEve`, `remindedDay`, `tipNags`, `lastNag` |
+| `gigs/{id}` | `ownerId`, `date` (yyyy-MM-dd), `start`, `end` (HH:mm or ''), `type`, `venue`, `city`, `address`, `clientName`, `clientPhone`, `priceMinor`, `currency`, `depositMinor`, `depositHolder` (uid or ''), `hasTip`, `tipSplit` (`equal`/`own`, missing = `equal`), `players` (uids who play), `tipMinor` (equal: the band's total, null until entered), `tips` (own: uid → amount), `tipPlayer` (whose entry was written last), `tipBy`, `notes`, `cancelled`, `rev`, `updatedBy`, `createdAt`, `updatedAt`; worker only: `pushRev`, `tipAnnounced`, `remindedEve`, `remindedDay`, `tipNags`, `lastNag` |
 | `feedback/{id}` | `uid`, `text`, `announced`, `createdAt`; read by the owner only |
 | `pushTokens/{token}` | `uid`; read only by the worker |
 | `meta/owner` | `uid` of the owner (one-time claim marker) |
 | `meta/app` | `locked`, `minBuild` |
+| `meta/band` | `tipSplit`: the band's default way of sharing tips; a leader writes it |
 | `meta/report` | `month` of the last monthly report sent (worker) |
 
 Money is in minor units (cents / para) as integers. All access rules are in

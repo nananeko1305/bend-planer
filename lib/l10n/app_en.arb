@@ -145,7 +145,7 @@
   "sectionWhen": "When",
   "sectionType": "Type",
   "sectionWhere": "Where and for whom",
-  "sectionMoney": "Money",
+  "sectionMoney": "Price",
   "sectionNotes": "Notes",
   "date": "Date",
   "startTime": "Start",
@@ -161,7 +161,6 @@
   "venue": "Venue",
   "city": "City",
   "address": "Address (optional)",
-  "clientName": "Client (optional)",
   "clientPhone": "Client's phone (optional)",
   "price": "Agreed price",
   "depositGiven": "Deposit paid",
@@ -410,5 +409,32 @@
   "welcomeLookHint": "Swipe to see all three. You can change it any time in Settings.",
   "welcomeStart": "Let's go",
   "welcomeSampleVenue": "Hotel Grand",
-  "welcomeSampleCity": "Belgrade"
+  "welcomeSampleCity": "Belgrade",
+  "tipSplitLabel": "How you share the tip",
+  "tipSplitEqual": "Shared equally",
+  "tipSplitOwn": "Each their own",
+  "tipSplitEqualHint": "After the gig someone enters the band's total; it is split evenly among those who played.",
+  "tipSplitOwnHint": "After the gig everyone enters what they got; the band's tip is the sum.",
+  "tipSplitSettingsHint": "For new gigs; each gig can change it.",
+  "tipSplitLeaderOnly": "The band leader chooses this.",
+  "whoPlays": "Who plays",
+  "pickPlayers": "Tick at least one member.",
+  "tipTotal": "Total {amount}",
+  "@tipTotal": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "tipForPlayer": "Tip: {name}",
+  "@tipForPlayer": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tipNotEntered": "not entered",
+  "tipsByMember": "Tips by member"
 }

@@ -196,7 +196,20 @@ class _AwaitingTipCard extends StatelessWidget {
               minimumSize: const Size(64, 44),
               padding: const EdgeInsets.symmetric(horizontal: 16),
             ),
-            onPressed: () => showTipDialog(context, gig, profile),
+            // Each their own: my entry if I played and have not entered it,
+            // otherwise the gig, where every player's entry is.
+            onPressed: () => gig.tipSplit == TipSplit.equal
+                ? showTipDialog(context, gig, profile)
+                : gig.players.contains(profile.uid) &&
+                      !gig.tips.containsKey(profile.uid)
+                ? showTipDialog(
+                    context,
+                    gig,
+                    profile,
+                    player: profile.uid,
+                    playerName: profile.displayName,
+                  )
+                : onOpen(gig),
             child: Text(t.enterTipShort),
           ),
         ],

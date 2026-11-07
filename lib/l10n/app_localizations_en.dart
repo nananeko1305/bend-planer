@@ -287,7 +287,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sectionWhere => 'Where and for whom';
 
   @override
-  String get sectionMoney => 'Money';
+  String get sectionMoney => 'Price';
 
   @override
   String get sectionNotes => 'Notes';
@@ -314,9 +314,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get address => 'Address (optional)';
-
-  @override
-  String get clientName => 'Client (optional)';
 
   @override
   String get clientPhone => 'Client\'s phone (optional)';
@@ -809,4 +806,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcomeSampleCity => 'Belgrade';
+
+  @override
+  String get tipSplitLabel => 'How you share the tip';
+
+  @override
+  String get tipSplitEqual => 'Shared equally';
+
+  @override
+  String get tipSplitOwn => 'Each their own';
+
+  @override
+  String get tipSplitEqualHint =>
+      'After the gig someone enters the band\'s total; it is split evenly among those who played.';
+
+  @override
+  String get tipSplitOwnHint =>
+      'After the gig everyone enters what they got; the band\'s tip is the sum.';
+
+  @override
+  String get tipSplitSettingsHint => 'For new gigs; each gig can change it.';
+
+  @override
+  String get tipSplitLeaderOnly => 'The band leader chooses this.';
+
+  @override
+  String get whoPlays => 'Who plays';
+
+  @override
+  String get pickPlayers => 'Tick at least one member.';
+
+  @override
+  String tipTotal(String amount) {
+    return 'Total $amount';
+  }
+
+  @override
+  String tipForPlayer(String name) {
+    return 'Tip: $name';
+  }
+
+  @override
+  String get tipNotEntered => 'not entered';
+
+  @override
+  String get tipsByMember => 'Tips by member';
 }

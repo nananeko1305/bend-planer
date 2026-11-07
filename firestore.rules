@@ -66,6 +66,16 @@ service cloud.firestore {
         && request.resource.data.get('minBuild', 0) >= 0;
     }
 
+    // How the band shares tips unless a gig says otherwise: 'equal' (the
+    // total split over who played) or 'own' (each keeps their own). A leader
+    // sets it; a missing document means 'equal'.
+    match /meta/band {
+      allow read: if signedIn();
+      allow create, update: if isLeader()
+        && request.resource.data.keys().hasOnly(['tipSplit'])
+        && request.resource.data.tipSplit in ['equal', 'own'];
+    }
+
     function profileKeys() {
       return ['email', 'role', 'disabled', 'firstName', 'lastName',
         'instrument', 'phone', 'announced', 'createdAt'];
@@ -127,14 +137,26 @@ service cloud.firestore {
       allow delete: if signedIn() && resource.data.uid == request.auth.uid;
     }
 
-    function formKeys() {
+    // What every version of the app writes from the form. 1.2 added how the
+    // tip is shared and who played; they stay optional, so an older app can
+    // still book a gig until it updates.
+    function requiredFormKeys() {
       return ['date', 'start', 'end', 'type', 'venue', 'city', 'address',
         'clientName', 'clientPhone', 'priceMinor', 'currency',
         'depositMinor', 'depositHolder', 'hasTip', 'notes'];
     }
+    function formKeys() {
+      return requiredFormKeys().concat(['tipSplit', 'players']);
+    }
+    function gigBookkeeping() {
+      return ['ownerId', 'tipMinor', 'tipBy', 'cancelled', 'rev', 'updatedBy',
+        'createdAt', 'updatedAt'];
+    }
     function newGigKeys() {
-      return formKeys().concat(['ownerId', 'tipMinor', 'tipBy', 'cancelled',
-        'rev', 'updatedBy', 'createdAt', 'updatedAt']);
+      return formKeys().concat(gigBookkeeping());
+    }
+    function requiredGigKeys() {
+      return requiredFormKeys().concat(gigBookkeeping());
     }
     function validMoney(v) {
       return v is int && v >= 0 && v <= 100000000;
@@ -154,6 +176,8 @@ service cloud.firestore {
         && d.hasTip is bool
         && shortText(d.notes, 1000)
         && (d.tipMinor == null || validMoney(d.tipMinor))
+        && d.get('tipSplit', 'equal') in ['equal', 'own']
+        && d.get('players', []) is list && d.get('players', []).size() <= 30
         && d.cancelled is bool;
     }
 
@@ -164,7 +188,7 @@ service cloud.firestore {
       // fields (pushRev, tipAnnounced, reminder marks) cannot be set.
       allow create: if isActive()
         && request.resource.data.keys().hasOnly(newGigKeys())
-        && request.resource.data.keys().hasAll(newGigKeys())
+        && request.resource.data.keys().hasAll(requiredGigKeys())
         && validGig(request.resource.data)
         && request.resource.data.ownerId == request.auth.uid
         && request.resource.data.updatedBy == request.auth.uid
@@ -185,13 +209,30 @@ service cloud.firestore {
           && request.resource.data.updatedBy == request.auth.uid
           && request.resource.data.updatedAt == request.time
           && (!affected().hasAny(['tipMinor']) || request.resource.data.tipMinor == null))
-        // Anyone in the band enters the tip of a gig that has one.
+        // Shared equally: anyone in the band enters the band's total.
         || (affected().hasOnly(['tipMinor', 'tipBy', 'tipAnnounced', 'updatedAt'])
+          && resource.data.get('tipSplit', 'equal') == 'equal'
           && request.resource.data.tipMinor is int
           && request.resource.data.tipBy == request.auth.uid
           && request.resource.data.get('tipAnnounced', false) == false
           && resource.data.hasTip == true
           && resource.data.cancelled == false
+          && request.resource.data.updatedAt == request.time)
+        // Each their own: anyone in the band enters one player's amount
+        // (for themselves, or for a player without the app). `tipPlayer`
+        // names the entry, so it alone may change.
+        || (affected().hasOnly(['tips', 'tipPlayer', 'tipBy', 'tipAnnounced', 'updatedAt'])
+          && resource.data.get('tipSplit', 'equal') == 'own'
+          && resource.data.hasTip == true
+          && resource.data.cancelled == false
+          && request.resource.data.tipPlayer is string
+          && request.resource.data.tipPlayer in resource.data.get('players', [])
+          && request.resource.data.tips is map
+          && request.resource.data.tips.diff(resource.data.get('tips', {}))
+            .affectedKeys().hasOnly([request.resource.data.tipPlayer])
+          && validMoney(request.resource.data.tips[request.resource.data.tipPlayer])
+          && request.resource.data.tipBy == request.auth.uid
+          && request.resource.data.get('tipAnnounced', false) == false
           && request.resource.data.updatedAt == request.time)
       );
 

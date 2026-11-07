@@ -4,6 +4,8 @@ import '../l10n/app_localizations.dart';
 import '../l10n/locale_controller.dart';
 import '../models/app_user.dart';
 import '../services/auth_service.dart';
+import '../services/background_save.dart';
+import '../services/band_settings_repository.dart';
 import '../services/live_data.dart';
 import '../services/reminder_health.dart';
 import '../theme/app_colors.dart';
@@ -13,6 +15,7 @@ import '../widgets/member_dialog.dart';
 import '../widgets/owner_section.dart';
 import '../widgets/skin_picker.dart';
 import '../widgets/skin_widgets.dart';
+import '../widgets/tip_share_fields.dart';
 import '../widgets/update_tiles.dart';
 import 'feedback_screen.dart';
 import 'share_app_screen.dart';
@@ -81,6 +84,39 @@ class SettingsScreen extends StatelessWidget {
               SectionLabel(t.language),
               const SizedBox(height: 8),
               const _LanguagePicker(),
+              gap,
+              // The band's way of sharing tips: a leader picks it, the rest
+              // see it. Each gig can still change it.
+              SectionLabel(t.tipSplitLabel),
+              const SizedBox(height: 8),
+              SkinCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TipSplitToggle(
+                      value: data.band.tipSplit,
+                      onChanged: me.isAdmin
+                          ? (v) => saveInBackground(
+                              context,
+                              () => BandSettingsRepository.instance.setTipSplit(
+                                v,
+                              ),
+                            )
+                          : null,
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      me.isAdmin
+                          ? t.tipSplitSettingsHint
+                          : t.tipSplitLeaderOnly,
+                      style: TextStyle(
+                        color: context.colors.muted,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               gap,
               SkinCard(
                 padding: EdgeInsets.zero,

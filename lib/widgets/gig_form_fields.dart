@@ -68,7 +68,7 @@ class GigTypePicker extends StatelessWidget {
       runSpacing: 8,
       children: [
         for (final type in GigType.values)
-          _Choice(
+          SkinChoice(
             label: gigTypeLabel(t, type),
             selected: type == value,
             onTap: () => onChanged(type),
@@ -95,7 +95,7 @@ class CurrencyToggle extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         for (final c in Currency.values) ...[
-          _Choice(
+          SkinChoice(
             label: c.code,
             selected: c == value,
             onTap: () => onChanged(c),
@@ -161,8 +161,10 @@ class TipToggle extends StatelessWidget {
   }
 }
 
-class _Choice extends StatelessWidget {
-  const _Choice({
+/// A rounded choice in the look's colors: filled when selected.
+class SkinChoice extends StatelessWidget {
+  const SkinChoice({
+    super.key,
     required this.label,
     required this.selected,
     required this.onTap,
@@ -170,7 +172,9 @@ class _Choice extends StatelessWidget {
 
   final String label;
   final bool selected;
-  final VoidCallback onTap;
+
+  /// Null for a choice shown but not changeable.
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
