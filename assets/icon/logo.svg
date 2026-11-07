@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108">
+  <!-- Bend Planer icon: a white microphone on a magenta-to-orange square.
+       108 units = the adaptive icon; launchers show the middle 72. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FF2E97"/>
+      <stop offset="1" stop-color="#FF8A00"/>
+    </linearGradient>
+  </defs>
+  <rect id="background" width="108" height="108" fill="url(#bg)"/>
+  <g id="foreground" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round">
+    <rect x="44" y="27" width="20" height="31" rx="10" fill="#FFFFFF" stroke="none"/>
+    <path d="M36 49 a18 18 0 0 0 36 0"/>
+    <path d="M54 67 V77 M44 79 H64"/>
+  </g>
+</svg>

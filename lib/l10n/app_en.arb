@@ -1,0 +1,407 @@
+{
+  "@@locale": "en",
+  "appTitle": "Bend Planer",
+  "appTagline": "Every gig, every euro, the whole band.",
+  "loginSubtitle": "Use the account your band leader made for you.",
+  "email": "Email",
+  "password": "Password",
+  "signIn": "Sign in",
+  "signOut": "Sign out",
+  "forgotPassword": "Forgot password?",
+  "resetSent": "Password reset email sent.",
+  "invalidEmail": "Enter a valid email",
+  "minChars6": "At least 6 characters",
+  "wait": "Please wait...",
+  "required": "Required",
+  "save": "Save",
+  "cancel": "Cancel",
+  "close": "Close",
+  "delete": "Delete",
+  "edit": "Edit",
+  "send": "Send",
+  "open": "Open",
+  "call": "Call",
+  "synced": "Synced",
+  "syncing": "Syncing...",
+  "download": "Download",
+  "later": "Later",
+  "newVersionTitle": "New version available",
+  "newVersionBody": "Version {version} is ready to download. You have {current}.",
+  "@newVersionBody": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "current": {
+        "type": "String"
+      }
+    }
+  },
+  "appVersion": "Version {version}",
+  "@appVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "checkUpdates": "Check for updates",
+  "updateCheckFailed": "Couldn't check for updates.",
+  "upToDate": "You have the latest version.",
+  "nextMonth": "Next month",
+  "previousMonth": "Previous month",
+  "changePassword": "Change password",
+  "currentPassword": "Current password",
+  "newPassword": "New password",
+  "confirmPassword": "Confirm new password",
+  "passwordChanged": "Password changed.",
+  "passwordsNoMatch": "Passwords do not match",
+  "errNoNetwork": "No internet connection.",
+  "errInvalidEmail": "The email is not valid.",
+  "errEmailInUse": "An account with this email already exists.",
+  "errWeakPassword": "Password is too weak (min. 6 characters).",
+  "errUserDisabled": "This account is disabled.",
+  "errWrongCredentials": "Wrong email or password.",
+  "errRecentLogin": "Sign out, sign in again and try once more.",
+  "errTooMany": "Too many attempts. Try again in a few minutes.",
+  "errPermission": "You don't have permission for this action.",
+  "errGeneric": "Something went wrong. Please try again.",
+  "tabGigs": "Gigs",
+  "tabCalendar": "Calendar",
+  "tabReport": "Report",
+  "tabBand": "Band",
+  "addGig": "Gig",
+  "notifications": "Notifications",
+  "settings": "Settings",
+  "contractedSoFar": "agreed so far",
+  "gigCount": "{count, plural, =1{1 gig} other{{count} gigs}}",
+  "@gigCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "awaitingTip": "Awaiting tip",
+  "enterTipShort": "Enter",
+  "upcoming": "Upcoming",
+  "past": "Past",
+  "noUpcoming": "No gigs booked yet. Tap + Gig to add one.",
+  "noPast": "No past gigs yet.",
+  "tonightAt": "Tonight · {time}",
+  "@tonightAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "todayAt": "Today · {time}",
+  "@todayAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "inDaysAt": "{count, plural, =1{Tomorrow} other{In {count} days}} · {time}",
+  "@inDaysAt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "tipChip": "Tip",
+  "noTipChip": "No tip",
+  "depositChip": "Deposit {amount}",
+  "@depositChip": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "tipAmountChip": "Tip {amount}",
+  "@tipAmountChip": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelledChip": "Cancelled",
+  "typeWedding": "Wedding",
+  "typeBirthday": "Birthday",
+  "typeKafana": "Kafana",
+  "typeCompany": "Company party",
+  "typeConcert": "Concert",
+  "typeOther": "Other",
+  "newGigTitle": "New gig",
+  "editGigTitle": "Edit gig",
+  "sectionWhen": "When",
+  "sectionType": "Type",
+  "sectionWhere": "Where and for whom",
+  "sectionMoney": "Money",
+  "sectionNotes": "Notes",
+  "date": "Date",
+  "startTime": "Start",
+  "endTime": "End (optional)",
+  "sameDayWarning": "There is already a gig that day: {what}.",
+  "@sameDayWarning": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "venue": "Venue",
+  "city": "City",
+  "address": "Address (optional)",
+  "clientName": "Client (optional)",
+  "clientPhone": "Client's phone (optional)",
+  "price": "Agreed price",
+  "depositGiven": "Deposit paid",
+  "depositAmount": "Deposit",
+  "depositHolder": "Who has it",
+  "tipQuestion": "Tip",
+  "hasTip": "Tip",
+  "noTip": "No tip",
+  "tipHint": "After the gig it waits for someone to enter the tip, and everyone gets a reminder.",
+  "notesHint": "Gear, sound, what to play",
+  "saveGig": "Save gig",
+  "enterAmount": "Enter an amount",
+  "depositTooBig": "The deposit is more than the price",
+  "whenLabel": "When",
+  "whereLabel": "Where",
+  "clientLabel": "Client",
+  "priceLabel": "Price",
+  "depositLabel": "Deposit",
+  "tipLabel": "Tip",
+  "notesLabel": "Notes",
+  "openMap": "Map",
+  "addedBy": "Added by {name}",
+  "@addedBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tipBy": "Entered by {name}",
+  "@tipBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "tipWaiting": "Waiting for the tip",
+  "tipLater": "After the gig",
+  "enterTip": "Enter tip",
+  "changeTip": "Change tip",
+  "tipFor": "Tip for {what}",
+  "@tipFor": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "tipAmount": "Tip amount",
+  "cancelGig": "Cancel gig",
+  "cancelGigConfirm": "Cancel this gig? It stays in the history and everyone gets a notification.",
+  "keepGig": "Keep it",
+  "restoreGig": "Restore gig",
+  "deleteGig": "Delete gig",
+  "deleteGigConfirm": "Delete this gig for good? Only for a gig entered by mistake. Nobody gets a notification.",
+  "gigGone": "This gig no longer exists.",
+  "nothingThatDay": "Nothing booked on this day.",
+  "addOnThisDay": "Add a gig on this day",
+  "totalEarned": "Total earned",
+  "agreedPlusTips": "agreed + tips",
+  "agreed": "Agreed",
+  "tips": "Tips",
+  "gigsLabel": "Gigs",
+  "cancelledLabel": "Cancelled",
+  "averageLabel": "Average",
+  "biggestTip": "Biggest tip",
+  "byType": "By type",
+  "alreadyBooked": "{month} · already booked",
+  "@alreadyBooked": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "reportEmpty": "No gigs this month.",
+  "tipsPending": "{count, plural, =1{1 gig still waits for its tip.} other{{count} gigs still wait for their tip.}}",
+  "@tipsPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dinarsApart": "Amounts in dinars are counted apart from euros.",
+  "bandTitle": "Band",
+  "addMember": "Add member",
+  "editMember": "Edit member",
+  "firstName": "First name",
+  "lastName": "Last name",
+  "instrument": "Instrument (optional)",
+  "phone": "Phone (optional)",
+  "startPassword": "Starting password",
+  "startPasswordHint": "Tell it to the member; they can change it in Settings.",
+  "roleAdmin": "Band leader",
+  "roleMember": "Member",
+  "roleOwner": "Owner",
+  "youSuffix": "(you)",
+  "removeMember": "Remove from band",
+  "removeMemberConfirm": "Remove {name} from the band? They can no longer sign in. The gigs they entered stay.",
+  "@removeMemberConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "removedMembers": "Removed",
+  "restoreMember": "Bring back",
+  "makeAdmin": "Make band leader",
+  "makeMember": "Make a regular member",
+  "memberCreated": "{name} can now sign in with {email}.",
+  "@memberCreated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "noMembers": "Nobody here yet. Add the first member.",
+  "profile": "Profile",
+  "editProfile": "Edit profile",
+  "look": "Look",
+  "skinBina": "Stage",
+  "skinNeon": "Neon",
+  "skinZlato": "Gold",
+  "skinBinaHint": "Concert lights",
+  "skinNeonHint": "A club at night",
+  "skinZlatoHint": "Black and gold",
+  "language": "Language",
+  "languagePhone": "Phone language",
+  "notificationsHint": "Choose which ones you get",
+  "sendFeedback": "Send feedback",
+  "feedbackHint": "Ideas and problems go straight to the person who makes the app.",
+  "feedbackField": "What would you change?",
+  "feedbackSent": "Sent. Thank you!",
+  "shareApp": "Share the app",
+  "shareAppHint": "Scan the code with another phone's camera, or send the link. Android will ask to allow installing from that source.",
+  "shareAppMessage": "Bend Planer: every gig of the band in one place.",
+  "copyLink": "Copy link",
+  "linkCopied": "Link copied.",
+  "sendLink": "Send",
+  "ownerSection": "Owner",
+  "appLocked": "Locked: nobody in the band can use the app.",
+  "appUnlocked": "Unlocked: the band uses the app.",
+  "lockApp": "Lock the app",
+  "unlockApp": "Unlock the app",
+  "lockConfirm": "Lock the app for the whole band? Nothing is deleted, and unlocking brings everything back.",
+  "requiredVersion": "Required version",
+  "anyVersion": "Any version may be used.",
+  "versionRequired": "Build {build} or newer is required.",
+  "@versionRequired": {
+    "placeholders": {
+      "build": {
+        "type": "int"
+      }
+    }
+  },
+  "requireLatest": "Require version {version}",
+  "@requireLatest": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "allowAnyVersion": "Allow any version",
+  "feedbackList": "Feedback",
+  "noFeedback": "No feedback yet.",
+  "claimOwnerTitle": "Set up the app",
+  "claimOwnerBody": "This is the first account. It becomes the owner: it can lock the app and adds the band leader.",
+  "claimOwnerButton": "Become the owner",
+  "noAccessTitle": "No access",
+  "noAccessBody": "Ask the band leader to add you.",
+  "removedTitle": "You are no longer in the band",
+  "removedBody": "Ask the band leader if this is a mistake.",
+  "lockedTitle": "Locked",
+  "lockedBody": "The app is locked for now.",
+  "lockedSafe": "Your data is safe",
+  "lockedSafeBody": "Nothing has been deleted. Once it is unlocked, everything is back.",
+  "lockedContact": "Ask your band leader for details.",
+  "lockedContactLeader": "Ask whoever set up the app for the band.",
+  "forceUpdateTitle": "Update needed",
+  "forceUpdateBody": "This version is too old. Download the new one to go on.",
+  "tryAgain": "Try again",
+  "pushGigNew": "New gig · {date}",
+  "@pushGigNew": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pushGigChanged": "Gig changed · {date}",
+  "@pushGigChanged": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pushGigCancelled": "Gig cancelled · {date}",
+  "@pushGigCancelled": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pushTip": "Tip entered · {date}",
+  "@pushTip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "pushTomorrow": "Playing tomorrow",
+  "pushToday": "Playing today",
+  "pushTipReminder": "Enter the tip",
+  "pushReport": "Report for {month}",
+  "@pushReport": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "pushMemberAdded": "New band member",
+  "pushMemberRemoved": "Member left the band",
+  "pushFeedback": "New feedback",
+  "notificationsOffTitle": "Notifications are off",
+  "notificationsOffBody": "You won't hear about new gigs or get reminders.",
+  "hibernationTitle": "Keep the notifications coming",
+  "hibernationBody": "Android puts apps you don't open for a while to sleep, and notifications stop. Turn that off for this app.",
+  "turnOn": "Turn on",
+  "openSettings": "Open settings",
+  "notNow": "Not now"
+}
