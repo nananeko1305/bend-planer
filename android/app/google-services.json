@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1085184220662",
+    "project_id": "bend-manager",
+    "storage_bucket": "bend-manager.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085184220662:android:43b36a47c6ad892520fbd7",
+        "android_client_info": {
+          "package_name": "com.nananeko.bend_planer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnmP9gLyYP_Rqt74rCz40w7JDaTeSg7k4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,219 @@
+rules_version = '2';
+// The only boundary between the app and the data: the app talks to Firestore
+// directly. Tested on the emulator in rules_test/. The push worker uses a
+// service account, which skips these rules; it repeats the checks it needs.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function userPath(uid) {
+      return /databases/$(database)/documents/users/$(uid);
+    }
+    function ownerMarker() {
+      return /databases/$(database)/documents/meta/owner;
+    }
+    function appDoc() {
+      return /databases/$(database)/documents/meta/app;
+    }
+    function hasProfile() {
+      return signedIn() && exists(userPath(request.auth.uid));
+    }
+    function me() {
+      return get(userPath(request.auth.uid)).data;
+    }
+    // The owner sells and looks after the app. Never locked out, or nobody
+    // could unlock.
+    function isOwner() {
+      return hasProfile() && me().role == 'owner';
+    }
+    // `exists` first: get() on a missing document fails the rule.
+    function unlocked() {
+      return !exists(appDoc()) || get(appDoc()).data.get('locked', false) == false;
+    }
+    // In the band, not removed, and the app not locked; or the owner.
+    function isActive() {
+      return isOwner() || (hasProfile() && me().disabled == false && unlocked());
+    }
+    // The band leader, or the owner.
+    function isLeader() {
+      return isActive() && me().role in ['admin', 'owner'];
+    }
+    function shortText(v, max) {
+      return v is string && v.size() <= max;
+    }
+    function affected() {
+      return request.resource.data.diff(resource.data).affectedKeys();
+    }
+
+    // Written once, by the first account to sign in; never changes.
+    match /meta/owner {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid == request.auth.uid
+        && getAfter(userPath(request.auth.uid)).data.role == 'owner';
+    }
+
+    // The lock and the oldest build still allowed. Everyone signed in reads
+    // it, so a locked phone knows to show the lock screen.
+    match /meta/app {
+      allow read: if signedIn();
+      allow create, update: if isOwner()
+        && request.resource.data.keys().hasOnly(['locked', 'minBuild'])
+        && request.resource.data.get('locked', false) is bool
+        && request.resource.data.get('minBuild', 0) is int
+        && request.resource.data.get('minBuild', 0) >= 0;
+    }
+
+    function profileKeys() {
+      return ['email', 'role', 'disabled', 'firstName', 'lastName',
+        'instrument', 'phone', 'announced', 'createdAt'];
+    }
+    function validDetails(d) {
+      return shortText(d.firstName, 50) && shortText(d.lastName, 50)
+        && shortText(d.instrument, 50) && shortText(d.phone, 40);
+    }
+
+    match /users/{uid} {
+      // Your own profile always (the gates need it); everyone's while active.
+      allow read: if (signedIn() && request.auth.uid == uid) || isActive();
+
+      // A leader adds a member; or the one-time owner claim, in the same
+      // batch as meta/owner.
+      allow create: if request.resource.data.keys().hasOnly(profileKeys())
+        && request.resource.data.keys().hasAll(profileKeys())
+        && shortText(request.resource.data.email, 200)
+        && validDetails(request.resource.data)
+        && request.resource.data.disabled == false
+        && request.resource.data.announced == false
+        && request.resource.data.createdAt == request.time
+        && (
+          (isLeader() && request.resource.data.role == 'member')
+          || (signedIn() && request.auth.uid == uid
+              && request.resource.data.role == 'owner'
+              && !exists(ownerMarker())
+              && existsAfter(ownerMarker()))
+        );
+
+      allow update: if isActive() && validDetails(request.resource.data) && (
+        // Anyone: their own name, instrument and phone.
+        (request.auth.uid == uid
+          && affected().hasOnly(['firstName', 'lastName', 'instrument', 'phone']))
+        // A leader: someone else's details, removing and bringing back. The
+        // worker announces a removal, so `announced` goes with `disabled`.
+        || (isLeader() && uid != request.auth.uid
+          && resource.data.role != 'owner'
+          && affected().hasOnly(['firstName', 'lastName', 'instrument', 'phone', 'disabled', 'announced'])
+          && request.resource.data.disabled is bool
+          && (!affected().hasAny(['announced']) || affected().hasAny(['disabled']))
+          && (!affected().hasAny(['disabled'])
+              || request.resource.data.announced == !request.resource.data.disabled))
+        // The owner: who leads the band.
+        || (isOwner() && uid != request.auth.uid
+          && resource.data.role != 'owner'
+          && affected().hasOnly(['role'])
+          && request.resource.data.role in ['admin', 'member'])
+      );
+    }
+
+    // Which account each phone belongs to; read only by the push worker.
+    match /pushTokens/{token} {
+      allow create, update: if isActive()
+        && token.size() <= 512
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid == request.auth.uid;
+      // Signing out works even when removed or locked.
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    function formKeys() {
+      return ['date', 'start', 'end', 'type', 'venue', 'city', 'address',
+        'clientName', 'clientPhone', 'priceMinor', 'currency',
+        'depositMinor', 'depositHolder', 'hasTip', 'notes'];
+    }
+    function newGigKeys() {
+      return formKeys().concat(['ownerId', 'tipMinor', 'tipBy', 'cancelled',
+        'rev', 'updatedBy', 'createdAt', 'updatedAt']);
+    }
+    function validMoney(v) {
+      return v is int && v >= 0 && v <= 100000000;
+    }
+    function validGig(d) {
+      return d.date is string && d.date.matches('[0-9]{4}-[0-9]{2}-[0-9]{2}')
+        && d.start is string && d.start.matches('[0-2][0-9]:[0-5][0-9]')
+        && d.end is string && (d.end == '' || d.end.matches('[0-2][0-9]:[0-5][0-9]'))
+        && d.type in ['wedding', 'birthday', 'kafana', 'company', 'concert', 'other']
+        && shortText(d.venue, 120) && shortText(d.city, 120)
+        && shortText(d.address, 120) && shortText(d.clientName, 120)
+        && shortText(d.clientPhone, 120)
+        && validMoney(d.priceMinor) && d.priceMinor > 0
+        && d.currency in ['EUR', 'RSD']
+        && validMoney(d.depositMinor) && d.depositMinor <= d.priceMinor
+        && shortText(d.depositHolder, 128)
+        && d.hasTip is bool
+        && shortText(d.notes, 1000)
+        && (d.tipMinor == null || validMoney(d.tipMinor))
+        && d.cancelled is bool;
+    }
+
+    match /gigs/{id} {
+      allow read: if isActive();
+
+      // Anyone in the band books a gig, as themselves. The worker's own
+      // fields (pushRev, tipAnnounced, reminder marks) cannot be set.
+      allow create: if isActive()
+        && request.resource.data.keys().hasOnly(newGigKeys())
+        && request.resource.data.keys().hasAll(newGigKeys())
+        && validGig(request.resource.data)
+        && request.resource.data.ownerId == request.auth.uid
+        && request.resource.data.updatedBy == request.auth.uid
+        && request.resource.data.tipMinor == null
+        && request.resource.data.tipBy == ''
+        && request.resource.data.cancelled == false
+        && request.resource.data.rev == 1
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+
+      allow update: if isActive() && validGig(request.resource.data) && (
+        // The author or a leader edits, cancels or restores. `rev` counts up
+        // by one, which is what makes the worker tell the band. Dropping the
+        // tip ("no tip") drops its amount too.
+        ((resource.data.ownerId == request.auth.uid || isLeader())
+          && affected().hasOnly(formKeys().concat(['cancelled', 'rev', 'updatedBy', 'updatedAt', 'tipMinor']))
+          && request.resource.data.rev == resource.data.rev + 1
+          && request.resource.data.updatedBy == request.auth.uid
+          && request.resource.data.updatedAt == request.time
+          && (!affected().hasAny(['tipMinor']) || request.resource.data.tipMinor == null))
+        // Anyone in the band enters the tip of a gig that has one.
+        || (affected().hasOnly(['tipMinor', 'tipBy', 'tipAnnounced', 'updatedAt'])
+          && request.resource.data.tipMinor is int
+          && request.resource.data.tipBy == request.auth.uid
+          && request.resource.data.get('tipAnnounced', false) == false
+          && resource.data.hasTip == true
+          && resource.data.cancelled == false
+          && request.resource.data.updatedAt == request.time)
+      );
+
+      // A gig entered by mistake; a real one is cancelled instead.
+      allow delete: if isActive()
+        && (resource.data.ownerId == request.auth.uid || isLeader());
+    }
+
+    // A member's note to the owner, who alone reads them.
+    match /feedback/{id} {
+      allow read: if isOwner();
+      allow create: if isActive()
+        && request.resource.data.keys().hasOnly(['uid', 'text', 'announced', 'createdAt'])
+        && request.resource.data.keys().hasAll(['uid', 'text', 'announced', 'createdAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 2000
+        && request.resource.data.announced == false
+        && request.resource.data.createdAt == request.time;
+    }
+
+    // meta/report and anything else: the worker only.
+  }
+}

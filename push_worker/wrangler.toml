@@ -1,0 +1,21 @@
+name = "bend-planer-push"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+# Preview URLs would keep older versions reachable, with the same key.
+preview_urls = false
+
+[vars]
+FIREBASE_PROJECT_ID = "bend-manager"
+
+# Cloudflare cron runs in UTC; the handler goes by the clock in Belgrade
+# (src/cron.js). Every half hour in two windows: 07:00-09:30 UTC covers the
+# 09:00 morning run in summer and winter, 18:00-20:30 UTC the 20:00 evening
+# one. Runs that find nothing due cost almost nothing. The free plan allows
+# five triggers per account.
+[triggers]
+crons = ["*/30 7-9 * * *", "*/30 18-20 * * *"]
+
+# Logs and CPU time in the Cloudflare dashboard.
+[observability]
+enabled = true

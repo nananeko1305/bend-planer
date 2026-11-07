@@ -1,0 +1,97 @@
+name: bend_planer
+description: "Bend Planer: gigs for one band."
+publish_to: 'none'
+
+# The release version comes from the git tags in CI; this is only a floor.
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  cloud_firestore: ^6.10.0
+  firebase_auth: ^6.7.0
+  firebase_core: ^4.15.0
+  firebase_messaging: ^16.7.0
+  http: ^1.6.0
+  intl: ^0.20.3
+  package_info_plus: ^10.2.1
+  qr_flutter: ^4.1.0
+  share_plus: ^13.3.0
+  shared_preferences: ^2.5.5
+  url_launcher: ^6.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.4
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/icon/logo.png
+    - assets/fonts/licenses/
+
+  # Bundled, never fetched: a font loaded at run time fails offline.
+  # Bina: Unbounded + Manrope. Neon: Tilt Neon + Monoton + Outfit.
+  # Zlato: Playfair Display + Manrope. All under the SIL Open Font License.
+  fonts:
+    - family: Unbounded
+      fonts:
+        - asset: assets/fonts/Unbounded-700.ttf
+          weight: 700
+        - asset: assets/fonts/Unbounded-800.ttf
+          weight: 800
+        - asset: assets/fonts/Unbounded-900.ttf
+          weight: 900
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/Manrope-500.ttf
+          weight: 500
+        - asset: assets/fonts/Manrope-600.ttf
+          weight: 600
+        - asset: assets/fonts/Manrope-700.ttf
+          weight: 700
+        - asset: assets/fonts/Manrope-800.ttf
+          weight: 800
+    - family: TiltNeon
+      fonts:
+        - asset: assets/fonts/TiltNeon-400.ttf
+    - family: Monoton
+      fonts:
+        - asset: assets/fonts/Monoton-400.ttf
+    - family: Outfit
+      fonts:
+        - asset: assets/fonts/Outfit-400.ttf
+          weight: 400
+        - asset: assets/fonts/Outfit-500.ttf
+          weight: 500
+        - asset: assets/fonts/Outfit-600.ttf
+          weight: 600
+        - asset: assets/fonts/Outfit-700.ttf
+          weight: 700
+    - family: PlayfairDisplay
+      fonts:
+        - asset: assets/fonts/PlayfairDisplay-700.ttf
+          weight: 700
+        - asset: assets/fonts/PlayfairDisplay-800.ttf
+          weight: 800
+        - asset: assets/fonts/PlayfairDisplay-700Italic.ttf
+          weight: 700
+          style: italic
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/logo_full.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "assets/icon/logo_background.png"
+  adaptive_icon_foreground: "assets/icon/logo_foreground.png"
+  # The foreground is drawn on the whole 108-unit canvas already.
+  adaptive_icon_foreground_inset: 0
