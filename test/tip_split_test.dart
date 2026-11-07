@@ -5,6 +5,7 @@ import 'package:bend_planer/models/gig_draft.dart';
 import 'package:bend_planer/models/report.dart';
 import 'package:bend_planer/money/money.dart';
 import 'package:bend_planer/theme/app_colors.dart';
+import 'package:bend_planer/widgets/gig_card.dart';
 import 'package:bend_planer/widgets/gig_tip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,6 +20,7 @@ Gig played({
   Map<String, int> tips = const {},
   String date = '2026-11-06',
   Currency currency = Currency.eur,
+  int price = 100000,
 }) => Gig(
   id: 'g$date',
   ownerId: 'ana',
@@ -26,7 +28,7 @@ Gig played({
     date: date,
     start: '20:00',
     venue: 'Sala',
-    priceMinor: 100000,
+    priceMinor: price,
     currency: currency,
     tipSplit: split,
     players: players,
@@ -118,6 +120,57 @@ void main() {
     expect(r.tipsByMember['ana'], {Currency.eur: 13000, Currency.rsd: 100000});
     expect(r.tipsByMember['bob'], {Currency.eur: 3000, Currency.rsd: 100000});
     expect(r.membersByTips.first.key, 'ana');
+  });
+
+  group('tips only', () {
+    test('no agreed price: waits for the tip, then counts it alone', () {
+      final g = played(price: 0);
+      expect(g.tipOnly, isTrue);
+      expect(g.statusOn(now), GigStatus.awaitingTip);
+      final paid = played(price: 0, total: 12000);
+      expect(paid.totalMinor, 12000);
+      final r = MonthReport.of(
+        [
+          played(date: '2026-10-04', price: 0, total: 12000),
+          played(date: '2026-10-05', total: 3000),
+        ],
+        DateTime(2026, 10),
+        now,
+      );
+      expect(r.gigs, 2);
+      expect(r.agreed, {Currency.eur: 100000});
+      expect(r.tips, {Currency.eur: 15000});
+    });
+
+    for (final skin in SkinId.values) {
+      for (final locale in [kSerbianLatin, const Locale('en')]) {
+        testWidgets(
+          'the card says so and fits 360 px: ${skin.name} ${locale.languageCode}',
+          (tester) async {
+            tester.view.physicalSize = const Size(360, 780);
+            tester.view.devicePixelRatio = 1;
+            addTearDown(tester.view.reset);
+            final g = played(date: '2026-11-14', price: 0);
+            await tester.pumpWidget(
+              inApp(
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: GigCard(gig: g, now: now, onTap: () {}),
+                ),
+                skin: skin,
+                locale: locale,
+              ),
+            );
+            await tester.pump();
+            expect(tester.takeException(), isNull);
+            expect(
+              find.text(locale.languageCode == 'sr' ? 'Za bakšiš' : 'For tips'),
+              findsOneWidget,
+            );
+          },
+        );
+      }
+    }
   });
 
   group('the tip card fits 360 px', () {

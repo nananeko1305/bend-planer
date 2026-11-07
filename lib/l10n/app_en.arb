@@ -436,5 +436,8 @@
     }
   },
   "tipNotEntered": "not entered",
-  "tipsByMember": "Tips by member"
+  "tipsByMember": "Tips by member",
+  "tipOnly": "Tips only",
+  "tipOnlyHint": "No agreed price: the band plays for tips.",
+  "tipOnlyPrice": "For tips"
 }

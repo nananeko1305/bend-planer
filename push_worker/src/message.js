@@ -77,7 +77,8 @@ export function gigLine(gig, { withPrice = true } = {}) {
   return [
     place,
     gig.start,
-    withPrice ? formatMoney(gig.priceMinor ?? 0, gig.currency) : '',
+    // A gig played for tips alone has no price to tell.
+    withPrice && (gig.priceMinor ?? 0) > 0 ? formatMoney(gig.priceMinor, gig.currency) : '',
   ]
     .filter((s) => s)
     .join(' · ');

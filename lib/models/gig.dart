@@ -75,6 +75,7 @@ class Gig {
   Currency get currency => draft.currency;
   int get priceMinor => draft.priceMinor;
   bool get hasTip => draft.hasTip;
+  bool get tipOnly => draft.tipOnly;
   TipSplit get tipSplit => draft.tipSplit;
   List<String> get players => draft.players;
 

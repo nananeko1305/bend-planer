@@ -40,6 +40,8 @@ test('a gig in one line leaves out what is empty', () => {
   const g = { venue: 'Sala Kristal', city: '', start: '20:00', priceMinor: 150000, currency: 'EUR' };
   assert.equal(gigLine(g), 'Sala Kristal · 20:00 · 1.500 €');
   assert.equal(gigLine(g, { withPrice: false }), 'Sala Kristal · 20:00');
+  // Played for tips alone: no price to tell.
+  assert.equal(gigLine({ ...g, priceMinor: 0 }), 'Sala Kristal · 20:00');
 });
 
 test('a long list is cut before FCM would refuse it', () => {

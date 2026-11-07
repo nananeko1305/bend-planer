@@ -252,5 +252,8 @@
   "tipTotal": "Ukupno {amount}",
   "tipForPlayer": "Bakšiš: {name}",
   "tipNotEntered": "nije upisano",
-  "tipsByMember": "Bakšiš po članu"
+  "tipsByMember": "Bakšiš po članu",
+  "tipOnly": "Samo za bakšiš",
+  "tipOnlyHint": "Bez dogovorene cene: bend svira za bakšiš.",
+  "tipOnlyPrice": "Za bakšiš"
 }
