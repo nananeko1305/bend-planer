@@ -856,9 +856,6 @@ class AppLocalizationsSr extends AppLocalizations {
   String get tipNotEntered => 'nije upisano';
 
   @override
-  String get tipsByMember => 'Bakšiš po članu';
-
-  @override
   String get tipOnly => 'Samo za bakšiš';
 
   @override
@@ -866,4 +863,50 @@ class AppLocalizationsSr extends AppLocalizations {
 
   @override
   String get tipOnlyPrice => 'Za bakšiš';
+
+  @override
+  String get previousYear => 'Prethodna godina';
+
+  @override
+  String get nextYear => 'Sledeća godina';
+
+  @override
+  String get periodMonth => 'Mesec';
+
+  @override
+  String get periodYear => 'Godina';
+
+  @override
+  String get myEarnings => 'Moja zarada';
+
+  @override
+  String get bandView => 'Bend';
+
+  @override
+  String get earnedByMe => 'Zaradio/la sam';
+
+  @override
+  String fromPriceAndTips(String price, String tips) {
+    return '$price od dogovorenog + $tips bakšiš';
+  }
+
+  @override
+  String get gigsPlayed => 'Svirke';
+
+  @override
+  String get perGig => 'Po svirci';
+
+  @override
+  String get earningsByMember => 'Zarada po članu';
+
+  @override
+  String tipsPart(String amount) {
+    return 'bakšiš $amount';
+  }
+
+  @override
+  String get byMonth => 'Po mesecima';
+
+  @override
+  String get notPlayingThisPeriod => 'U ovom periodu nemaš svirki.';
 }

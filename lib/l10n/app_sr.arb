@@ -252,8 +252,21 @@
   "tipTotal": "Ukupno {amount}",
   "tipForPlayer": "Bakšiš: {name}",
   "tipNotEntered": "nije upisano",
-  "tipsByMember": "Bakšiš po članu",
   "tipOnly": "Samo za bakšiš",
   "tipOnlyHint": "Bez dogovorene cene: bend svira za bakšiš.",
-  "tipOnlyPrice": "Za bakšiš"
+  "tipOnlyPrice": "Za bakšiš",
+  "previousYear": "Prethodna godina",
+  "nextYear": "Sledeća godina",
+  "periodMonth": "Mesec",
+  "periodYear": "Godina",
+  "myEarnings": "Moja zarada",
+  "bandView": "Bend",
+  "earnedByMe": "Zaradio/la sam",
+  "fromPriceAndTips": "{price} od dogovorenog + {tips} bakšiš",
+  "gigsPlayed": "Svirke",
+  "perGig": "Po svirci",
+  "earningsByMember": "Zarada po članu",
+  "tipsPart": "bakšiš {amount}",
+  "byMonth": "Po mesecima",
+  "notPlayingThisPeriod": "U ovom periodu nemaš svirki."
 }

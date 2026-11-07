@@ -436,8 +436,38 @@
     }
   },
   "tipNotEntered": "not entered",
-  "tipsByMember": "Tips by member",
   "tipOnly": "Tips only",
   "tipOnlyHint": "No agreed price: the band plays for tips.",
-  "tipOnlyPrice": "For tips"
+  "tipOnlyPrice": "For tips",
+  "previousYear": "Previous year",
+  "nextYear": "Next year",
+  "periodMonth": "Month",
+  "periodYear": "Year",
+  "myEarnings": "My earnings",
+  "bandView": "Band",
+  "earnedByMe": "I earned",
+  "fromPriceAndTips": "{price} agreed + {tips} tips",
+  "@fromPriceAndTips": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      },
+      "tips": {
+        "type": "String"
+      }
+    }
+  },
+  "gigsPlayed": "Gigs",
+  "perGig": "Per gig",
+  "earningsByMember": "Earnings by member",
+  "tipsPart": "tips {amount}",
+  "@tipsPart": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "byMonth": "By month",
+  "notPlayingThisPeriod": "No gigs of yours in this period."
 }

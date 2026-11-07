@@ -104,6 +104,10 @@ can still create), the README table, `rules_test/`. Deploy the rules first.
 **Price:** show it through `priceOf` (it says "Za bakšiš" for a tips-only gig,
 `Gig.tipOnly`, price 0); the worker's `gigLine` leaves a 0 price out.
 
+**Shares:** a member's part of a gig comes from `Gig.priceSharesWith(band)` and
+`tipSharesWith(band)`, with `band` (the current members' uids) standing in for
+gigs from before "Ko svira"; `MonthReport.of` / `ofYear` take the same `band`.
+
 **Tips:** read them through `Gig.tipTotal`, `tipComplete` and `tipShares`,
 never `tipMinor` alone (that is only the equal-split total). The worker's
 `gigTipTotal` and `tipComplete` in `due.js` mirror them; change both.

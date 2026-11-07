@@ -107,21 +107,37 @@ class Gig {
         : players.every(entries.containsKey);
   }
 
-  /// What each player gets, by uid: the total split evenly (what does not
-  /// divide goes a cent each to the first players, so it adds up exactly),
-  /// or their own entry. Empty while there is nothing to share.
-  Map<String, int> get tipShares {
+  /// Who shares this gig: those ticked, or [band] for a gig from before 1.2,
+  /// when nobody was ticked.
+  List<String> playersOr(List<String> band) =>
+      players.isNotEmpty ? players : band;
+
+  /// [total] split evenly over [who]: what does not divide goes a cent each
+  /// to the first ones, so it adds up exactly.
+  static Map<String, int> _even(int total, List<String> who) {
+    if (who.isEmpty) return const {};
+    final base = total ~/ who.length;
+    final rest = total % who.length;
+    return {
+      for (var i = 0; i < who.length; i++) who[i]: base + (i < rest ? 1 : 0),
+    };
+  }
+
+  /// Each player's part of the agreed price, by uid.
+  Map<String, int> priceSharesWith(List<String> band) =>
+      _even(priceMinor, playersOr(band));
+
+  /// Each player's part of the tip, by uid: their share of the total, or
+  /// their own entry. Empty while there is nothing to share.
+  Map<String, int> tipSharesWith(List<String> band) {
     if (!hasTip) return const {};
     if (tipSplit == TipSplit.own) return _ownEntries;
     final total = tipMinor;
-    if (total == null || players.isEmpty) return const {};
-    final base = total ~/ players.length;
-    final rest = total % players.length;
-    return {
-      for (var i = 0; i < players.length; i++)
-        players[i]: base + (i < rest ? 1 : 0),
-    };
+    return total == null ? const {} : _even(total, playersOr(band));
   }
+
+  /// [tipSharesWith] over those ticked only.
+  Map<String, int> get tipShares => tipSharesWith(const []);
 
   GigStatus statusOn(DateTime now) {
     if (cancelled) return GigStatus.cancelled;
