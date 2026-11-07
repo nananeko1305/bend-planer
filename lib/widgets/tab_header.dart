@@ -22,6 +22,17 @@ class TabHeader extends StatelessWidget {
   /// Null on the first tab, which shows the app's name with the logo.
   final String? title;
 
+  /// The app's name next to the logo; Neon writes it in tube letters. Also
+  /// used by the look previews on the welcome screen.
+  static TextStyle appNameStyle(AppColors c) => c.skin == SkinId.neon
+      ? TextStyle(
+          fontFamily: 'Monoton',
+          fontSize: 23,
+          color: const Color(0xFFFFE1F7),
+          shadows: c.glow,
+        )
+      : c.display(20);
+
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
@@ -39,14 +50,7 @@ class TabHeader extends StatelessWidget {
               title ?? t.appTitle,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: title == null && c.skin == SkinId.neon
-                  ? TextStyle(
-                      fontFamily: 'Monoton',
-                      fontSize: 23,
-                      color: const Color(0xFFFFE1F7),
-                      shadows: c.glow,
-                    )
-                  : c.display(title == null ? 20 : 24),
+              style: title == null ? appNameStyle(c) : c.display(24),
             ),
           ),
           IconButton(

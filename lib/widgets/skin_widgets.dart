@@ -148,6 +148,8 @@ class PrimaryPill extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 22),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
+                // Centered when the button is stretched to full width.
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (icon != null) ...[
                     Icon(icon, color: c.onPrimary, size: 24),
