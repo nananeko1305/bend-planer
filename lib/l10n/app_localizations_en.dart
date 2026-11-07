@@ -787,4 +787,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notNow => 'Not now';
+
+  @override
+  String get welcomeChooseLanguage => 'Izaberi jezik · Choose your language';
+
+  @override
+  String get welcomeNext => 'Next';
+
+  @override
+  String get welcomeLookTitle => 'Pick your look';
+
+  @override
+  String get welcomeLookHint =>
+      'Swipe to see all three. You can change it any time in Settings.';
+
+  @override
+  String get welcomeStart => 'Let\'s go';
+
+  @override
+  String get welcomeSampleVenue => 'Hotel Grand';
+
+  @override
+  String get welcomeSampleCity => 'Belgrade';
 }

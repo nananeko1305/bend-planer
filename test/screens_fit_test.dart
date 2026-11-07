@@ -24,21 +24,43 @@ void main() {
 
   for (final skin in SkinId.values) {
     for (final locale in [kSerbianLatin, const Locale('en')]) {
-      testWidgets('home and report fit 360 px: ${skin.name} ${locale.languageCode}', (tester) async {
-        tester.view.physicalSize = const Size(360, 780);
-        tester.view.devicePixelRatio = 1;
-        addTearDown(tester.view.reset);
-        final data = fakeData(gigs);
+      testWidgets(
+        'home and report fit 360 px: ${skin.name} ${locale.languageCode}',
+        (tester) async {
+          tester.view.physicalSize = const Size(360, 780);
+          tester.view.devicePixelRatio = 1;
+          addTearDown(tester.view.reset);
+          final data = fakeData(gigs);
 
-        await tester.pumpWidget(inApp(GigsTab(data: data, profile: me), skin: skin, locale: locale));
-        await tester.pump();
-        expect(tester.takeException(), isNull);
-        expect(find.text(locale.languageCode == 'sr' ? 'Čeka bakšiš'.toUpperCase() : 'AWAITING TIP'), findsOneWidget);
+          await tester.pumpWidget(
+            inApp(
+              GigsTab(data: data, profile: me),
+              skin: skin,
+              locale: locale,
+            ),
+          );
+          await tester.pump();
+          expect(tester.takeException(), isNull);
+          expect(
+            find.text(
+              locale.languageCode == 'sr'
+                  ? 'Čeka bakšiš'.toUpperCase()
+                  : 'AWAITING TIP',
+            ),
+            findsOneWidget,
+          );
 
-        await tester.pumpWidget(inApp(ReportTab(data: data, profile: me), skin: skin, locale: locale));
-        await tester.pump();
-        expect(tester.takeException(), isNull);
-      });
+          await tester.pumpWidget(
+            inApp(
+              ReportTab(data: data, profile: me),
+              skin: skin,
+              locale: locale,
+            ),
+          );
+          await tester.pump();
+          expect(tester.takeException(), isNull);
+        },
+      );
     }
   }
 }

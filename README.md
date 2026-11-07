@@ -2,7 +2,9 @@
 
 Android app (Flutter + Firebase) for one band that books gigs ("tezge"):
 everyone sees every gig, adds new ones, and enters the tip after playing.
-Serbian (Latin) and English. Three looks to pick from on each phone.
+Serbian (Latin) and English. Three looks to pick from on each phone: the
+first start shows a welcome where you choose the language and see each look
+live, and both can be changed later in Settings.
 
 Firebase project: `bend-manager` (Firestore in `eur3`), on the Google
 account managerbend@gmail.com. The push worker runs on the Cloudflare

@@ -7,7 +7,8 @@ import 'package:flutter/services.dart';
 import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
 import 'l10n/locale_controller.dart';
-import 'screens/auth_gate.dart';
+import 'screens/start_gate.dart';
+import 'services/first_run.dart';
 import 'theme/app_theme.dart';
 import 'theme/theme_controller.dart';
 
@@ -20,7 +21,7 @@ Future<void> main() async {
   _registerFontLicenses();
   await themeController.load();
   await localeController.load();
-  runApp(const BendPlanerApp());
+  runApp(BendPlanerApp(welcome: await welcomePending()));
 }
 
 /// The bundled fonts come under the SIL Open Font License, which travels with
@@ -45,7 +46,10 @@ void _registerFontLicenses() {
 }
 
 class BendPlanerApp extends StatelessWidget {
-  const BendPlanerApp({super.key});
+  const BendPlanerApp({super.key, required this.welcome});
+
+  /// First start on this phone: show the welcome before signing in.
+  final bool welcome;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +69,7 @@ class BendPlanerApp extends StatelessWidget {
             value: AppTheme.overlayFor(themeController.colors),
             child: child!,
           ),
-          home: const AuthGate(),
+          home: StartGate(welcome: welcome),
         );
       },
     );

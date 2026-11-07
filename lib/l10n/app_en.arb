@@ -403,5 +403,12 @@
   "hibernationBody": "Android puts apps you don't open for a while to sleep, and notifications stop. Turn that off for this app.",
   "turnOn": "Turn on",
   "openSettings": "Open settings",
-  "notNow": "Not now"
+  "notNow": "Not now",
+  "welcomeChooseLanguage": "Izaberi jezik · Choose your language",
+  "welcomeNext": "Next",
+  "welcomeLookTitle": "Pick your look",
+  "welcomeLookHint": "Swipe to see all three. You can change it any time in Settings.",
+  "welcomeStart": "Let's go",
+  "welcomeSampleVenue": "Hotel Grand",
+  "welcomeSampleCity": "Belgrade"
 }

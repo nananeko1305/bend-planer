@@ -37,7 +37,22 @@ jobs:
       - id: pages
         uses: actions/configure-pages@v5
 
+      # The first merge has no release yet: release-apk.yml publishes the page
+      # together with it, so there is nothing to redeploy here.
+      - name: Find the newest release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::No release yet; the first release deploys the page."
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build static site for the newest release
+        if: steps.release.outputs.exists == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -51,9 +66,11 @@ jobs:
           curl -fsS "${{ steps.pages.outputs.base_url }}/version.json" -o _site/version.json
 
       - uses: actions/upload-pages-artifact@v3
+        if: steps.release.outputs.exists == 'true'
         with:
           path: _site
 
       - name: Deploy to GitHub Pages
+        if: steps.release.outputs.exists == 'true'
         id: deployment
         uses: actions/deploy-pages@v4

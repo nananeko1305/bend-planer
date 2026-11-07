@@ -41,7 +41,8 @@ the change.
 
 ## Code map
 
-Start-up: `main.dart` → `AuthGate` (signed in?) → `ProfileGate` (profile,
+Start-up: `main.dart` → `StartGate` (first start on this phone: `WelcomeScreen`,
+language then look) → `AuthGate` (signed in?) → `ProfileGate` (profile,
 removed, or the one-time owner claim) → `AppGate` (`meta/app`: locked, or build
 too old) → `HomeScreen`. Each gate watches live; `AuthGate` keys `ProfileGate`
 by uid, so switching accounts resets everything below.

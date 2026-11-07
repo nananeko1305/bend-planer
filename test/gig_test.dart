@@ -22,8 +22,14 @@ void main() {
     });
 
     test('cancelled wins over everything', () {
-      expect(gigOn('2026-11-06', cancelled: true).statusOn(now), GigStatus.cancelled);
-      expect(gigOn('2026-11-14', cancelled: true).statusOn(now), GigStatus.cancelled);
+      expect(
+        gigOn('2026-11-06', cancelled: true).statusOn(now),
+        GigStatus.cancelled,
+      );
+      expect(
+        gigOn('2026-11-14', cancelled: true).statusOn(now),
+        GigStatus.cancelled,
+      );
     });
 
     test('days from today count calendar days', () {
@@ -35,16 +41,38 @@ void main() {
   });
 
   group('writes', () {
-    const draft = GigDraft(date: '2026-11-14', start: '20:00', priceMinor: 150000);
+    const draft = GigDraft(
+      date: '2026-11-14',
+      start: '20:00',
+      priceMinor: 150000,
+    );
 
     test('a new gig carries exactly what the rules require', () {
       final map = Gig.newDocMap(draft, 'ana');
       expect(map.keys.toSet(), {
-        'date', 'start', 'end', 'type', 'venue', 'city', 'address',
-        'clientName', 'clientPhone', 'priceMinor', 'currency',
-        'depositMinor', 'depositHolder', 'hasTip', 'notes',
-        'ownerId', 'tipMinor', 'tipBy', 'cancelled', 'rev', 'updatedBy',
-        'createdAt', 'updatedAt',
+        'date',
+        'start',
+        'end',
+        'type',
+        'venue',
+        'city',
+        'address',
+        'clientName',
+        'clientPhone',
+        'priceMinor',
+        'currency',
+        'depositMinor',
+        'depositHolder',
+        'hasTip',
+        'notes',
+        'ownerId',
+        'tipMinor',
+        'tipBy',
+        'cancelled',
+        'rev',
+        'updatedBy',
+        'createdAt',
+        'updatedAt',
       });
       expect(map['rev'], 1);
       expect(map['tipMinor'], isNull);
@@ -54,7 +82,12 @@ void main() {
     test('an edit bumps the revision and drops a tip that is gone', () {
       final gig = gigOn('2026-11-14', tip: 2000);
       final map = gig.editMap(
-        const GigDraft(date: '2026-11-14', start: '21:00', priceMinor: 1, hasTip: false),
+        const GigDraft(
+          date: '2026-11-14',
+          start: '21:00',
+          priceMinor: 1,
+          hasTip: false,
+        ),
         'leader',
       );
       expect(map['rev'], 2);
@@ -65,7 +98,12 @@ void main() {
     });
 
     test('no deposit means no holder', () {
-      const d = GigDraft(date: '2026-11-14', start: '20:00', priceMinor: 1, depositHolder: 'x');
+      const d = GigDraft(
+        date: '2026-11-14',
+        start: '20:00',
+        priceMinor: 1,
+        depositHolder: 'x',
+      );
       expect(d.toMap()['depositHolder'], '');
     });
   });

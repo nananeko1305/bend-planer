@@ -1501,6 +1501,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not now'**
   String get notNow;
+
+  /// No description provided for @welcomeChooseLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Izaberi jezik · Choose your language'**
+  String get welcomeChooseLanguage;
+
+  /// No description provided for @welcomeNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get welcomeNext;
+
+  /// No description provided for @welcomeLookTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick your look'**
+  String get welcomeLookTitle;
+
+  /// No description provided for @welcomeLookHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe to see all three. You can change it any time in Settings.'**
+  String get welcomeLookHint;
+
+  /// No description provided for @welcomeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s go'**
+  String get welcomeStart;
+
+  /// No description provided for @welcomeSampleVenue.
+  ///
+  /// In en, this message translates to:
+  /// **'Hotel Grand'**
+  String get welcomeSampleVenue;
+
+  /// No description provided for @welcomeSampleCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Belgrade'**
+  String get welcomeSampleCity;
 }
 
 class _AppLocalizationsDelegate

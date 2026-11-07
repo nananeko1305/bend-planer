@@ -233,5 +233,12 @@
   "hibernationBody": "Android uspava aplikacije koje dugo ne otvaraš i tada obaveštenja ne stižu. Isključi to za ovu aplikaciju.",
   "turnOn": "Uključi",
   "openSettings": "Otvori podešavanja",
-  "notNow": "Ne sada"
+  "notNow": "Ne sada",
+  "welcomeChooseLanguage": "Izaberi jezik · Choose your language",
+  "welcomeNext": "Dalje",
+  "welcomeLookTitle": "Izaberi izgled",
+  "welcomeLookHint": "Prevuci da vidiš sva tri. Uvek ga možeš promeniti u Podešavanjima.",
+  "welcomeStart": "Kreni",
+  "welcomeSampleVenue": "Hotel Grand",
+  "welcomeSampleCity": "Beograd"
 }
