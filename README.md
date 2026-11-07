@@ -136,6 +136,11 @@ the phone's settings (Settings → Obaveštenja).
 - The commit type sets the version: `feat` bumps the minor, anything else the
   patch, a breaking change the major. `pubspec.yaml` is only a floor.
 - Download page: https://nananeko1305.github.io/bend-planer/
+- The APK is named after its version (`bend-planer-1.3.2.apk`); the page and
+  `version.json` link to that file of their release. Every release also
+  carries the same APK as `bend-planer.apk`, because installs up to 1.3.1
+  open `releases/latest/download/bend-planer.apk`. Newer installs share and
+  download through the page instead.
 
 | Piece | Deployed by | When |
 |---|---|---|

@@ -3,10 +3,11 @@ import 'dart:io';
 
 import 'package:package_info_plus/package_info_plus.dart';
 
-/// Always the newest APK, so a QR code already handed out never goes stale. The
-/// file name is `APK_NAME` in `.github/workflows/release-apk.yml`.
-const String kAppDownloadUrl =
-    'https://github.com/nananeko1305/bend-planer/releases/latest/download/bend-planer.apk';
+/// The download page: it always offers the newest APK, named after its
+/// version, with the install steps, so a QR code already handed out never
+/// goes stale. (Installs up to 1.3.1 link straight to the fixed-name APK,
+/// which every release still carries.)
+const String kDownloadPageUrl = 'https://nananeko1305.github.io/bend-planer/';
 
 /// Latest release as published by CI to GitHub Pages (`version.json`).
 class ReleaseInfo {

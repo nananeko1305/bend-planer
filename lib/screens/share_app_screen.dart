@@ -13,7 +13,7 @@ class ShareAppScreen extends StatelessWidget {
   Future<void> _copy(BuildContext context) async {
     final t = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    await Clipboard.setData(const ClipboardData(text: kAppDownloadUrl));
+    await Clipboard.setData(const ClipboardData(text: kDownloadPageUrl));
     messenger.showSnackBar(SnackBar(content: Text(t.linkCopied)));
   }
 
@@ -21,7 +21,7 @@ class ShareAppScreen extends StatelessWidget {
     final t = AppLocalizations.of(context);
     return SharePlus.instance.share(
       ShareParams(
-        text: '${t.shareAppMessage}\n$kAppDownloadUrl',
+        text: '${t.shareAppMessage}\n$kDownloadPageUrl',
         title: t.appTitle,
       ),
     );
@@ -45,7 +45,7 @@ class ShareAppScreen extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: QrImageView(
-                  data: kAppDownloadUrl,
+                  data: kDownloadPageUrl,
                   size: 240,
                   backgroundColor: Colors.white,
                   eyeStyle: const QrEyeStyle(
@@ -65,7 +65,7 @@ class ShareAppScreen extends StatelessWidget {
           Text(t.shareAppHint, textAlign: TextAlign.center),
           const SizedBox(height: 14),
           const SelectableText(
-            kAppDownloadUrl,
+            kDownloadPageUrl,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 12),
           ),

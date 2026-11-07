@@ -117,7 +117,7 @@ class _ForceUpdateScreen extends StatelessWidget {
       body: t.forceUpdateBody,
       actionLabel: t.download,
       onAction: () => launchUrl(
-        Uri.parse(kAppDownloadUrl),
+        Uri.parse(kDownloadPageUrl),
         mode: LaunchMode.externalApplication,
       ),
     );
