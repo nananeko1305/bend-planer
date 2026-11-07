@@ -59,6 +59,18 @@ void main() {
           );
           await tester.pump();
           expect(tester.takeException(), isNull);
+
+          // Every view: mine and the band's, a month and a year.
+          final sr = locale.languageCode == 'sr';
+          for (final pick in [
+            sr ? 'Bend' : 'Band',
+            sr ? 'Godina' : 'Year',
+            sr ? 'Moja zarada' : 'My earnings',
+          ]) {
+            await tester.tap(find.text(pick));
+            await tester.pump();
+            expect(tester.takeException(), isNull, reason: pick);
+          }
         },
       );
     }

@@ -850,9 +850,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tipNotEntered => 'not entered';
 
   @override
-  String get tipsByMember => 'Tips by member';
-
-  @override
   String get tipOnly => 'Tips only';
 
   @override
@@ -860,4 +857,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tipOnlyPrice => 'For tips';
+
+  @override
+  String get previousYear => 'Previous year';
+
+  @override
+  String get nextYear => 'Next year';
+
+  @override
+  String get periodMonth => 'Month';
+
+  @override
+  String get periodYear => 'Year';
+
+  @override
+  String get myEarnings => 'My earnings';
+
+  @override
+  String get bandView => 'Band';
+
+  @override
+  String get earnedByMe => 'I earned';
+
+  @override
+  String fromPriceAndTips(String price, String tips) {
+    return '$price agreed + $tips tips';
+  }
+
+  @override
+  String get gigsPlayed => 'Gigs';
+
+  @override
+  String get perGig => 'Per gig';
+
+  @override
+  String get earningsByMember => 'Earnings by member';
+
+  @override
+  String tipsPart(String amount) {
+    return 'tips $amount';
+  }
+
+  @override
+  String get byMonth => 'By month';
+
+  @override
+  String get notPlayingThisPeriod => 'No gigs of yours in this period.';
 }

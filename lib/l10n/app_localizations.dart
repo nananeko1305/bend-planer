@@ -1610,12 +1610,6 @@ abstract class AppLocalizations {
   /// **'not entered'**
   String get tipNotEntered;
 
-  /// No description provided for @tipsByMember.
-  ///
-  /// In en, this message translates to:
-  /// **'Tips by member'**
-  String get tipsByMember;
-
   /// No description provided for @tipOnly.
   ///
   /// In en, this message translates to:
@@ -1633,6 +1627,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'For tips'**
   String get tipOnlyPrice;
+
+  /// No description provided for @previousYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous year'**
+  String get previousYear;
+
+  /// No description provided for @nextYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Next year'**
+  String get nextYear;
+
+  /// No description provided for @periodMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get periodMonth;
+
+  /// No description provided for @periodYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get periodYear;
+
+  /// No description provided for @myEarnings.
+  ///
+  /// In en, this message translates to:
+  /// **'My earnings'**
+  String get myEarnings;
+
+  /// No description provided for @bandView.
+  ///
+  /// In en, this message translates to:
+  /// **'Band'**
+  String get bandView;
+
+  /// No description provided for @earnedByMe.
+  ///
+  /// In en, this message translates to:
+  /// **'I earned'**
+  String get earnedByMe;
+
+  /// No description provided for @fromPriceAndTips.
+  ///
+  /// In en, this message translates to:
+  /// **'{price} agreed + {tips} tips'**
+  String fromPriceAndTips(String price, String tips);
+
+  /// No description provided for @gigsPlayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Gigs'**
+  String get gigsPlayed;
+
+  /// No description provided for @perGig.
+  ///
+  /// In en, this message translates to:
+  /// **'Per gig'**
+  String get perGig;
+
+  /// No description provided for @earningsByMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Earnings by member'**
+  String get earningsByMember;
+
+  /// No description provided for @tipsPart.
+  ///
+  /// In en, this message translates to:
+  /// **'tips {amount}'**
+  String tipsPart(String amount);
+
+  /// No description provided for @byMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'By month'**
+  String get byMonth;
+
+  /// No description provided for @notPlayingThisPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'No gigs of yours in this period.'**
+  String get notPlayingThisPeriod;
 }
 
 class _AppLocalizationsDelegate

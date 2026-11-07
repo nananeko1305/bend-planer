@@ -62,8 +62,14 @@ is shared and who plays.
   - *Svako svoje* (`own`): each player's own amount, entered by anyone in the
     band (for themselves, or for a player without the app); the band's tip is
     the sum. Complete once every player has an entry.
-- The report shows the band's tips and what each member got (shares and own
-  entries together).
+- **The report** covers a month or a whole year (then also month by month),
+  in two views:
+  - *Moja zarada*: a member's own earnings, their part of each agreed price,
+    split evenly among the players like an equal tip, plus their tips, with
+    gigs played and per gig. The owner, outside the band, sees only the band.
+  - *Bend*: the band's totals and "Zarada po članu", each member's earnings
+    with the tips part.
+  Gigs from before "Ko svira" count as played by the band as it is now.
 - Cancelling keeps the gig in the history, struck through, out of the
   report. Delete is for gigs entered by mistake and tells nobody.
 - The monthly report is computed from the gigs every time, never stored:

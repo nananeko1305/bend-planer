@@ -119,7 +119,7 @@ void main() {
     expect(r.tips, {Currency.eur: 21000, Currency.rsd: 300000});
     expect(r.tipsByMember['ana'], {Currency.eur: 13000, Currency.rsd: 100000});
     expect(r.tipsByMember['bob'], {Currency.eur: 3000, Currency.rsd: 100000});
-    expect(r.membersByTips.first.key, 'ana');
+    expect(r.membersByEarnings.first.key, 'ana');
   });
 
   group('tips only', () {
