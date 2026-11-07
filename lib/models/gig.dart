@@ -11,6 +11,13 @@ GigType gigTypeFromName(String? name) => GigType.values.firstWhere(
   orElse: () => GigType.other,
 );
 
+/// How a gig's tip is shared: one total for the band, split evenly over who
+/// played, or each player's own amount. Gigs from before 1.2 are [equal].
+enum TipSplit { equal, own }
+
+TipSplit tipSplitFromName(String? name) =>
+    name == TipSplit.own.name ? TipSplit.own : TipSplit.equal;
+
 /// Where a gig stands, worked out from its date and fields; never stored.
 enum GigStatus { upcoming, awaitingTip, done, cancelled }
 
@@ -23,6 +30,8 @@ class Gig {
     required this.draft,
     this.tipMinor,
     this.tipBy = '',
+    this.tips = const {},
+    this.tipPlayer = '',
     this.cancelled = false,
     this.rev = 1,
     this.pushRev = 0,
@@ -37,9 +46,17 @@ class Gig {
   /// Everything a member types in the form.
   final GigDraft draft;
 
-  /// Entered after the gig; null until then.
+  /// Shared equally: the band's total, entered after the gig; null until then.
   final int? tipMinor;
+
+  /// Who entered the latest tip, total or entry.
   final String tipBy;
+
+  /// Each their own: every player's entry by uid, 0 included.
+  final Map<String, int> tips;
+
+  /// Whose entry in [tips] was written last; the rules check it.
+  final String tipPlayer;
   final bool cancelled;
 
   /// Bumped by every edit; the push worker announces until [pushRev] catches
@@ -58,11 +75,57 @@ class Gig {
   Currency get currency => draft.currency;
   int get priceMinor => draft.priceMinor;
   bool get hasTip => draft.hasTip;
+  TipSplit get tipSplit => draft.tipSplit;
+  List<String> get players => draft.players;
+
+  /// The entries that count: a player unticked after entering drops out.
+  Map<String, int> get _ownEntries => players.isEmpty
+      ? tips
+      : {
+          for (final e in tips.entries)
+            if (players.contains(e.key)) e.key: e.value,
+        };
+
+  /// The band's tip: the total, or the sum of the entries; null while there
+  /// is none, or the gig has no tip.
+  int? get tipTotal {
+    if (!hasTip) return null;
+    if (tipSplit == TipSplit.equal) return tipMinor;
+    final entries = _ownEntries;
+    return entries.isEmpty
+        ? null
+        : entries.values.fold<int>(0, (a, b) => a + b);
+  }
+
+  /// Nothing left to enter: the total, or an entry from every player.
+  bool get tipComplete {
+    if (tipSplit == TipSplit.equal) return tipMinor != null;
+    final entries = _ownEntries;
+    return players.isEmpty
+        ? entries.isNotEmpty
+        : players.every(entries.containsKey);
+  }
+
+  /// What each player gets, by uid: the total split evenly (what does not
+  /// divide goes a cent each to the first players, so it adds up exactly),
+  /// or their own entry. Empty while there is nothing to share.
+  Map<String, int> get tipShares {
+    if (!hasTip) return const {};
+    if (tipSplit == TipSplit.own) return _ownEntries;
+    final total = tipMinor;
+    if (total == null || players.isEmpty) return const {};
+    final base = total ~/ players.length;
+    final rest = total % players.length;
+    return {
+      for (var i = 0; i < players.length; i++)
+        players[i]: base + (i < rest ? 1 : 0),
+    };
+  }
 
   GigStatus statusOn(DateTime now) {
     if (cancelled) return GigStatus.cancelled;
     if (!day.isBefore(dayOf(now))) return GigStatus.upcoming;
-    if (hasTip && tipMinor == null) return GigStatus.awaitingTip;
+    if (hasTip && !tipComplete) return GigStatus.awaitingTip;
     return GigStatus.done;
   }
 
@@ -70,7 +133,7 @@ class Gig {
   int daysFrom(DateTime now) => daysBetween(now, day);
 
   /// Agreed price plus the tip, once entered.
-  int get totalMinor => priceMinor + (tipMinor ?? 0);
+  int get totalMinor => priceMinor + (tipTotal ?? 0);
 
   factory Gig.fromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
     final d = doc.data() ?? const {};
@@ -95,9 +158,20 @@ class Gig {
         depositHolder: str('depositHolder'),
         hasTip: d['hasTip'] as bool? ?? false,
         notes: str('notes'),
+        tipSplit: tipSplitFromName(d['tipSplit'] as String?),
+        players: [
+          for (final p in d['players'] as List? ?? const [])
+            if (p is String) p,
+        ],
       ),
       tipMinor: (d['tipMinor'] as num?)?.toInt(),
       tipBy: str('tipBy'),
+      tips: {
+        for (final e in (d['tips'] as Map? ?? const {}).entries)
+          if (e.key is String && e.value is num)
+            e.key as String: (e.value as num).toInt(),
+      },
+      tipPlayer: str('tipPlayer'),
       cancelled: d['cancelled'] as bool? ?? false,
       rev: (d['rev'] as num?)?.toInt() ?? 1,
       pushRev: intOf('pushRev'),
@@ -135,6 +209,21 @@ class Gig {
     'cancelled': value,
     'rev': rev + 1,
     'updatedBy': uid,
+    'updatedAt': FieldValue.serverTimestamp(),
+  };
+
+  /// Each their own: [player]'s amount, entered by [uid] (themselves, or for
+  /// a player without the app). Only that entry changes, so entries made at
+  /// once on two phones never overwrite each other.
+  static Map<String, dynamic> ownTipMap(
+    String player,
+    int amountMinor,
+    String uid,
+  ) => {
+    'tips.$player': amountMinor,
+    'tipPlayer': player,
+    'tipBy': uid,
+    'tipAnnounced': false,
     'updatedAt': FieldValue.serverTimestamp(),
   };
 

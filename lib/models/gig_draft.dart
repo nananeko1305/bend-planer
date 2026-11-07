@@ -21,6 +21,8 @@ class GigDraft {
     this.depositHolder = '',
     this.hasTip = true,
     this.notes = '',
+    this.tipSplit = TipSplit.equal,
+    this.players = const [],
   });
 
   /// `yyyy-MM-dd`, see `day_key.dart`.
@@ -46,6 +48,12 @@ class GigDraft {
   final bool hasTip;
   final String notes;
 
+  /// How the tip is shared; the band's default for a new gig.
+  final TipSplit tipSplit;
+
+  /// uids of who plays; the tip is shared over them, or entered by them.
+  final List<String> players;
+
   /// "Sala Kristal, Kraljevo", leaving out what is empty.
   String get place => [venue, city].where((s) => s.isNotEmpty).join(', ');
 
@@ -65,5 +73,7 @@ class GigDraft {
     'depositHolder': depositMinor > 0 ? depositHolder : '',
     'hasTip': hasTip,
     'notes': notes,
+    'tipSplit': tipSplit.name,
+    'players': players,
   };
 }

@@ -64,6 +64,12 @@ export function decodeValue(value) {
     // Firestore leaves `values` out of an empty array.
     return (value.arrayValue.values ?? []).map(decodeValue);
   }
+  if ('mapValue' in value) {
+    // Firestore leaves `fields` out of an empty map.
+    return Object.fromEntries(
+      Object.entries(value.mapValue.fields ?? {}).map(([k, v]) => [k, decodeValue(v)]),
+    );
+  }
   if ('integerValue' in value) return Number(value.integerValue);
   if ('doubleValue' in value) return value.doubleValue;
   return (

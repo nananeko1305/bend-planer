@@ -146,11 +146,48 @@ class _ReportTabState extends State<ReportTab> {
                     Text(
                       moneyOf(
                         context,
-                        r.biggestTip!.tipMinor!,
+                        r.biggestTip!.tipTotal!,
                         r.biggestTip!.currency,
                       ),
                       style: c.display(22),
                     ),
+                  ],
+                ),
+              ),
+            ],
+            if (r.tipsByMember.isNotEmpty) ...[
+              const SizedBox(height: 22),
+              Text(t.tipsByMember, style: c.display(18, color: c.primary)),
+              const SizedBox(height: 10),
+              SkinCard(
+                child: Column(
+                  children: [
+                    for (final e in r.membersByTips)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                widget.data.nameOf(e.key),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              sums(e.value),
+                              textAlign: TextAlign.end,
+                              style: TextStyle(
+                                color: c.tipText,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ),

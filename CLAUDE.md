@@ -98,8 +98,12 @@ by uid, so switching accounts resets everything below.
 
 **New field on a gig:** `GigDraft` (form fields) or `Gig`, `fromDoc` with a
 default (old documents and old APKs exist), the rules (`formKeys` or
-`newGigKeys`, `validGig`), the README table, `rules_test/`. Deploy the rules
-first.
+`newGigKeys`, `validGig`; leave it out of `requiredFormKeys` so an older app
+can still create), the README table, `rules_test/`. Deploy the rules first.
+
+**Tips:** read them through `Gig.tipTotal`, `tipComplete` and `tipShares`,
+never `tipMinor` alone (that is only the equal-split total). The worker's
+`gigTipTotal` and `tipComplete` in `due.js` mirror them; change both.
 
 **New push kind:** `message.js` (`KINDS`), `PushKind` in `band_push.dart` and
 `bandPushTitle`, the l10n key, the title in `res/values/`, `values-sr/` and

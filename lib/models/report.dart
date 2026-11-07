@@ -35,6 +35,10 @@ class MonthReport {
   Gig? biggestTip;
   final List<TypeRow> byType = [];
 
+  /// What each member got in tips this month, by uid: their equal shares and
+  /// their own entries together, per currency.
+  final Map<String, Amounts> tipsByMember = {};
+
   /// Past gigs with a tip that nobody has entered yet.
   int tipsPending = 0;
 
@@ -67,9 +71,17 @@ class MonthReport {
       counts[g.currency] = (counts[g.currency] ?? 0) + 1;
       _add(r.agreed, g.currency, g.priceMinor);
       _add(r.total, g.currency, g.totalMinor);
-      if (g.tipMinor != null) {
-        _add(r.tips, g.currency, g.tipMinor!);
+      final tip = g.tipTotal;
+      if (tip != null) {
+        _add(r.tips, g.currency, tip);
         if (r.biggestTip == null || _beats(g, r.biggestTip!)) r.biggestTip = g;
+      }
+      for (final share in g.tipShares.entries) {
+        _add(
+          r.tipsByMember.putIfAbsent(share.key, () => {}),
+          g.currency,
+          share.value,
+        );
       }
       if (g.statusOn(now) == GigStatus.awaitingTip) r.tipsPending++;
       final row = rows.putIfAbsent(g.type, () => TypeRow(g.type));
@@ -87,7 +99,12 @@ class MonthReport {
   /// A bigger tip wins; euros count over dinars at a rough 117 to one, only
   /// to pick one gig to show, never in a sum.
   static bool _beats(Gig a, Gig b) =>
-      _inEuroish(a.tipMinor!, a.currency) > _inEuroish(b.tipMinor!, b.currency);
+      _inEuroish(a.tipTotal!, a.currency) > _inEuroish(b.tipTotal!, b.currency);
+
+  /// Members by what they got in tips, most first (the same rough rate).
+  List<MapEntry<String, Amounts>> get membersByTips =>
+      tipsByMember.entries.toList()
+        ..sort((a, b) => _key(b.value).compareTo(_key(a.value)));
 
   static double _inEuroish(int minor, Currency c) =>
       c == Currency.eur ? minor.toDouble() : minor / 117;

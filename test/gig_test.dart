@@ -65,6 +65,8 @@ void main() {
         'depositHolder',
         'hasTip',
         'notes',
+        'tipSplit',
+        'players',
         'ownerId',
         'tipMinor',
         'tipBy',

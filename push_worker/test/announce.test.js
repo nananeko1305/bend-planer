@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { announce, gigPushKind } from '../src/announce.js';
+import { announce, gigPushKind, tipText } from '../src/announce.js';
 import { runScheduled } from '../src/cron.js';
 
 /** An in-memory stand-in for the Google client, recording what it did. */
@@ -148,4 +148,17 @@ test('the scheduled run sends, marks, and stays silent while locked', async () =
   assert.deepEqual(google.recorded[0].marks, [
     { path: 'gigs/g1', fields: { remindedDay: '2026-11-07' } },
   ]);
+});
+
+test('a tip of each their own says whose it is', async () => {
+  const b = band();
+  b.users.set('ana', user('member', { firstName: 'Ana', lastName: 'Ilić' }));
+  const own = gigDoc({ tipSplit: 'own', players: ['ana', 'bob'], tips: { ana: 10000 }, tipPlayer: 'ana', tipBy: 'bob' });
+  assert.equal(tipText(own, b), 'Ana Ilić: 100 €');
+  assert.equal(tipText(gigDoc({ tipMinor: 35000 }), b), '350 €');
+  const google = fakeGoogle({ 'gigs/g1': own });
+  assert.equal(await announce(google, b, 'bob', 'tip', 'g1', now), 204);
+  const kinds = google.sent.map((s) => `${s.kind}:${s.token}`);
+  assert.ok(kinds.includes('tip:tAna') && !kinds.includes('tip:tBob'));
+  assert.deepEqual(google.writes.map((w) => w.fields), [{ tipAnnounced: true }]);
 });

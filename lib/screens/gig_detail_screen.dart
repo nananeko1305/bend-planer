@@ -11,8 +11,8 @@ import '../theme/app_colors.dart';
 import '../widgets/confirm_delete.dart';
 import '../widgets/gig_card.dart';
 import '../widgets/gig_format.dart';
+import '../widgets/gig_tip_card.dart';
 import '../widgets/skin_widgets.dart';
-import '../widgets/tip_dialog.dart';
 import 'gig_form_screen.dart';
 
 /// Everything about one gig, and what this member may do with it. Follows the
@@ -164,22 +164,7 @@ class _Detail extends StatelessWidget {
                 if (d.depositHolder.isNotEmpty) data.nameOf(d.depositHolder),
               ].join(' · '),
             ),
-          _Row(
-            icon: Icons.volunteer_activism_rounded,
-            label: t.tipLabel,
-            value: !gig.hasTip
-                ? t.noTipChip
-                : gig.tipMinor != null
-                ? '${moneyOf(context, gig.tipMinor!, gig.currency)}\n${t.tipBy(data.nameOf(gig.tipBy))}'
-                : (played ? t.tipWaiting : t.tipLater),
-            action: gig.hasTip && played && !gig.cancelled
-                ? _Action(
-                    gig.tipMinor == null ? t.enterTip : t.changeTip,
-                    Icons.edit_rounded,
-                    () => showTipDialog(context, gig, profile),
-                  )
-                : null,
-          ),
+          GigTipCard(gig: gig, data: data, profile: profile, played: played),
           if (d.notes.isNotEmpty)
             _Row(
               icon: Icons.notes_rounded,

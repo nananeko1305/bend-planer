@@ -3,6 +3,7 @@
 // look, so a repeated or forged call can at most repeat nothing.
 
 import { bandPhones, isActive, isLeader, ownerPhones, sendTo } from './band.js';
+import { gigTipTotal } from './due.js';
 import {
   addDays,
   dateLabel,
@@ -15,6 +16,20 @@ import {
 const CLAIM_ATTEMPTS = 2;
 
 export const KINDS = ['gig', 'tip', 'member', 'feedback'];
+
+/**
+ * What a tip push says: the band's total, or for an entry of one player's
+ * own, whose it is ("Ana Ilić: 100 €").
+ */
+export function tipText(gig, band) {
+  if (gig.tipSplit !== 'own') return formatMoney(gig.tipMinor, gig.currency);
+  const minor = gig.tips?.[gig.tipPlayer];
+  if (!Number.isInteger(minor)) return '';
+  const player = band.users.get(gig.tipPlayer);
+  const name = `${player?.firstName ?? ''} ${player?.lastName ?? ''}`.trim();
+  const amount = formatMoney(minor, gig.currency);
+  return name ? `${name}: ${amount}` : amount;
+}
 
 /** The kind of push a gig change is, from what the band was told so far. */
 export function gigPushKind(gig) {
@@ -45,16 +60,14 @@ const SPECS = {
   },
   tip: {
     path: (id) => `gigs/${id}`,
-    due: (g) => Number.isInteger(g.tipMinor) && g.tipAnnounced !== true,
+    due: (g) => gigTipTotal(g) !== null && g.tipAnnounced !== true,
     mayAsk: (g, uid) => g.tipBy === uid,
     mark: () => ({ tipAnnounced: true }),
     push: (g, band, uid) => ({
       phones: bandPhones(band, { except: uid }),
       message: message('tip', {
         arg: dateLabel(g.date),
-        text: [gigLine(g, { withPrice: false }), formatMoney(g.tipMinor, g.currency)]
-          .filter((s) => s)
-          .join(' · '),
+        text: [gigLine(g, { withPrice: false }), tipText(g, band)].filter((s) => s).join(' · '),
         gigId: g.id,
       }),
     }),

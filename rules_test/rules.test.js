@@ -262,3 +262,56 @@ describe('push tokens and feedback', () => {
     await assertSucceeds(getDocs(collection(as('owner'), 'feedback')));
   });
 });
+
+describe('tips: shared equally or each their own', () => {
+  const tipNow = (changes) => ({ tipAnnounced: false, updatedAt: serverTimestamp(), ...changes });
+
+  test('a leader sets how the band shares tips; a member cannot', async () => {
+    await seedBand();
+    await assertSucceeds(setDoc(doc(as('leader'), 'meta/band'), { tipSplit: 'own' }));
+    await assertFails(setDoc(doc(as('ana'), 'meta/band'), { tipSplit: 'equal' }));
+    await assertFails(setDoc(doc(as('leader'), 'meta/band'), { tipSplit: 'half' }));
+    await assertSucceeds(getDoc(doc(as('ana'), 'meta/band')));
+  });
+
+  test('a gig says how its tip is shared and who played; an older app may leave both out', async () => {
+    await seedBand();
+    const db = as('ana');
+    await assertSucceeds(setDoc(doc(db, 'gigs/old'), gig('ana')));
+    await assertSucceeds(
+      setDoc(doc(db, 'gigs/new'), gig('ana', { tipSplit: 'own', players: ['ana', 'bob'] })),
+    );
+    await assertFails(setDoc(doc(db, 'gigs/bad'), gig('ana', { tipSplit: 'half' })));
+    await assertFails(setDoc(doc(db, 'gigs/bad2'), gig('ana', { players: 'ana' })));
+  });
+
+  test('each their own: anyone enters one ticked player at a time', async () => {
+    await seedBand();
+    await seedGig('g1', 'ana', { date: '2026-11-01', tipSplit: 'own', players: ['ana', 'bob'] });
+    const ref = (uid) => doc(as(uid), 'gigs/g1');
+    // Bob enters Ana's, as for a player without the app.
+    await assertSucceeds(updateDoc(ref('bob'), tipNow({ 'tips.ana': 10000, tipPlayer: 'ana', tipBy: 'bob' })));
+    await assertSucceeds(updateDoc(ref('bob'), tipNow({ 'tips.bob': 0, tipPlayer: 'bob', tipBy: 'bob' })));
+    // Not a player, two entries at once, or an entry other than the named one.
+    await assertFails(updateDoc(ref('ana'), tipNow({ 'tips.leader': 500, tipPlayer: 'leader', tipBy: 'ana' })));
+    await assertFails(
+      updateDoc(ref('ana'), tipNow({ 'tips.ana': 1, 'tips.bob': 2, tipPlayer: 'ana', tipBy: 'ana' })),
+    );
+    await assertFails(updateDoc(ref('ana'), tipNow({ 'tips.ana': 1, tipPlayer: 'bob', tipBy: 'ana' })));
+    // Someone else's name as the one who entered it, or a negative amount.
+    await assertFails(updateDoc(ref('ana'), tipNow({ 'tips.ana': 1, tipPlayer: 'ana', tipBy: 'bob' })));
+    await assertFails(updateDoc(ref('ana'), tipNow({ 'tips.ana': -1, tipPlayer: 'ana', tipBy: 'ana' })));
+  });
+
+  test('the two ways do not mix', async () => {
+    await seedBand();
+    await seedGig('own', 'ana', { date: '2026-11-01', tipSplit: 'own', players: ['ana'] });
+    await seedGig('equal', 'ana', { date: '2026-11-01', tipSplit: 'equal', players: ['ana'] });
+    const db = as('ana');
+    await assertFails(updateDoc(doc(db, 'gigs/own'), tipNow({ tipMinor: 1000, tipBy: 'ana' })));
+    await assertFails(
+      updateDoc(doc(db, 'gigs/equal'), tipNow({ 'tips.ana': 1000, tipPlayer: 'ana', tipBy: 'ana' })),
+    );
+    await assertSucceeds(updateDoc(doc(db, 'gigs/equal'), tipNow({ tipMinor: 1000, tipBy: 'ana' })));
+  });
+});

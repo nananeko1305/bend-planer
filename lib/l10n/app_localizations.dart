@@ -599,7 +599,7 @@ abstract class AppLocalizations {
   /// No description provided for @sectionMoney.
   ///
   /// In en, this message translates to:
-  /// **'Money'**
+  /// **'Price'**
   String get sectionMoney;
 
   /// No description provided for @sectionNotes.
@@ -649,12 +649,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Address (optional)'**
   String get address;
-
-  /// No description provided for @clientName.
-  ///
-  /// In en, this message translates to:
-  /// **'Client (optional)'**
-  String get clientName;
 
   /// No description provided for @clientPhone.
   ///
@@ -1543,6 +1537,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Belgrade'**
   String get welcomeSampleCity;
+
+  /// No description provided for @tipSplitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'How you share the tip'**
+  String get tipSplitLabel;
+
+  /// No description provided for @tipSplitEqual.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared equally'**
+  String get tipSplitEqual;
+
+  /// No description provided for @tipSplitOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'Each their own'**
+  String get tipSplitOwn;
+
+  /// No description provided for @tipSplitEqualHint.
+  ///
+  /// In en, this message translates to:
+  /// **'After the gig someone enters the band\'s total; it is split evenly among those who played.'**
+  String get tipSplitEqualHint;
+
+  /// No description provided for @tipSplitOwnHint.
+  ///
+  /// In en, this message translates to:
+  /// **'After the gig everyone enters what they got; the band\'s tip is the sum.'**
+  String get tipSplitOwnHint;
+
+  /// No description provided for @tipSplitSettingsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For new gigs; each gig can change it.'**
+  String get tipSplitSettingsHint;
+
+  /// No description provided for @tipSplitLeaderOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'The band leader chooses this.'**
+  String get tipSplitLeaderOnly;
+
+  /// No description provided for @whoPlays.
+  ///
+  /// In en, this message translates to:
+  /// **'Who plays'**
+  String get whoPlays;
+
+  /// No description provided for @pickPlayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Tick at least one member.'**
+  String get pickPlayers;
+
+  /// No description provided for @tipTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total {amount}'**
+  String tipTotal(String amount);
+
+  /// No description provided for @tipForPlayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Tip: {name}'**
+  String tipForPlayer(String name);
+
+  /// No description provided for @tipNotEntered.
+  ///
+  /// In en, this message translates to:
+  /// **'not entered'**
+  String get tipNotEntered;
+
+  /// No description provided for @tipsByMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips by member'**
+  String get tipsByMember;
 }
 
 class _AppLocalizationsDelegate

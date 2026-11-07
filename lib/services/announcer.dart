@@ -27,9 +27,16 @@ List<Announcement> pendingAnnouncements({
   for (final g in gigs)
     if (g.createdAt != null &&
         g.tipBy == me &&
-        g.tipMinor != null &&
+        g.tipTotal != null &&
         !g.tipAnnounced)
-      (kind: AnnounceKind.tip, id: g.id, key: 'tip:${g.id}:${g.tipMinor}'),
+      (
+        kind: AnnounceKind.tip,
+        id: g.id,
+        // A new entry, or a new amount, is a new announcement.
+        key: g.tipSplit == TipSplit.own
+            ? 'tip:${g.id}:${g.tipPlayer}:${g.tips[g.tipPlayer]}'
+            : 'tip:${g.id}:${g.tipMinor}',
+      ),
   if (leader)
     for (final u in users)
       if (!u.isOwner && !u.announced)

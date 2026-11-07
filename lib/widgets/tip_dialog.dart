@@ -10,24 +10,44 @@ import '../theme/app_colors.dart';
 import 'gig_format.dart';
 
 /// Asks for the tip of a played gig and saves it. Anyone in the band may.
-Future<void> showTipDialog(BuildContext context, Gig gig, AppUser me) async {
+/// With [player] (each their own), it is that player's amount, entered by
+/// [me] for themselves or for someone without the app.
+Future<void> showTipDialog(
+  BuildContext context,
+  Gig gig,
+  AppUser me, {
+  String? player,
+  String playerName = '',
+}) async {
   final t = AppLocalizations.of(context);
+  final own = player;
   final amount = await showDialog<int>(
     context: context,
-    builder: (_) => _TipDialog(gig: gig, title: t.tipFor(gigSummary(t, gig))),
+    builder: (_) => _TipDialog(
+      gig: gig,
+      title: own == null
+          ? t.tipFor(gigSummary(t, gig))
+          : t.tipForPlayer(playerName),
+      current: own == null ? gig.tipMinor : gig.tips[own],
+    ),
   );
   if (amount == null || !context.mounted) return;
   saveInBackground(
     context,
-    () => GigRepository.instance.enterTip(gig, amount, me.uid),
+    () => own == null
+        ? GigRepository.instance.enterTip(gig, amount, me.uid)
+        : GigRepository.instance.enterOwnTip(gig, own, amount, me.uid),
   );
 }
 
 class _TipDialog extends StatefulWidget {
-  const _TipDialog({required this.gig, required this.title});
+  const _TipDialog({required this.gig, required this.title, this.current});
 
   final Gig gig;
   final String title;
+
+  /// The amount entered before, to change.
+  final int? current;
 
   @override
   State<_TipDialog> createState() => _TipDialogState();
@@ -36,7 +56,7 @@ class _TipDialog extends StatefulWidget {
 class _TipDialogState extends State<_TipDialog> {
   final _form = GlobalKey<FormState>();
   late final _amount = TextEditingController(
-    text: widget.gig.tipMinor == null ? '' : moneyToInput(widget.gig.tipMinor!),
+    text: widget.current == null ? '' : moneyToInput(widget.current!),
   );
 
   @override

@@ -92,9 +92,9 @@ class GigCard extends StatelessWidget {
     final c = context.colors;
     if (gig.cancelled) return [SkinChip(t.cancelledChip, color: c.muted)];
     return [
-      if (gig.hasTip && gig.tipMinor != null)
+      if (gig.hasTip && gig.tipTotal != null)
         SkinChip(
-          t.tipAmountChip(moneyOf(context, gig.tipMinor!, gig.currency)),
+          t.tipAmountChip(moneyOf(context, gig.tipTotal!, gig.currency)),
           color: c.tipText,
         )
       else if (gig.hasTip)

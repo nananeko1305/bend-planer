@@ -31,6 +31,14 @@ class GigRepository {
   Future<void> enterTip(Gig gig, int amountMinor, String uid) =>
       _gigs.doc(gig.id).update(Gig.tipMap(amountMinor, uid));
 
+  /// Each their own: [player]'s amount, entered by [uid].
+  Future<void> enterOwnTip(
+    Gig gig,
+    String player,
+    int amountMinor,
+    String uid,
+  ) => _gigs.doc(gig.id).update(Gig.ownTipMap(player, amountMinor, uid));
+
   /// For a gig entered by mistake; nobody is told.
   Future<void> delete(Gig gig) => _gigs.doc(gig.id).delete();
 }

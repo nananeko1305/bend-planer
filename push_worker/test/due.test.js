@@ -6,10 +6,13 @@ import {
   dueTipNags,
   dueToday,
   dueTomorrow,
+  gigTipTotal,
   monthTotals,
   previousMonth,
   reportMonthDue,
+  tipComplete,
 } from '../src/due.js';
+import { decodeValue } from '../src/google.js';
 
 const gig = (id, date, extra = {}) => ({
   id,
@@ -90,4 +93,33 @@ test('the plan follows the clock in Belgrade', () => {
   const first = plan([], new Date('2026-12-01T08:00:00Z'), '2026-10');
   assert.deepEqual(first.map((j) => j.message.data.kind), ['report']);
   assert.deepEqual(first[0].marks, [{ path: 'meta/report', fields: { month: '2026-11' }, mustExist: false }]);
+});
+
+test('each their own: the total is the sum, complete once every player entered', () => {
+  const own = (tips, players = ['ana', 'bob']) => gig('o', '2026-11-06', { tipSplit: 'own', players, tips });
+  assert.equal(gigTipTotal(own({})), null);
+  assert.equal(tipComplete(own({ ana: 10000 })), false);
+  assert.equal(gigTipTotal(own({ ana: 10000 })), 10000);
+  assert.equal(tipComplete(own({ ana: 10000, bob: 0 })), true);
+  // Someone unticked after entering no longer counts.
+  assert.equal(gigTipTotal(own({ ana: 10000, bob: 5000 }, ['ana'])), 10000);
+  // Shared equally, or a gig from before 1.2: the total alone.
+  assert.equal(tipComplete(gig('e', '2026-11-06', { tipMinor: 0 })), true);
+  assert.equal(gigTipTotal(gig('e', '2026-11-06', { tipSplit: 'equal', tipMinor: 2000 })), 2000);
+});
+
+test('a tip of each their own is asked about until everyone entered', () => {
+  const today = '2026-11-07';
+  const gigs = [
+    gig('half', '2026-11-06', { tipSplit: 'own', players: ['ana', 'bob'], tips: { ana: 100 } }),
+    gig('all', '2026-11-06', { tipSplit: 'own', players: ['ana', 'bob'], tips: { ana: 100, bob: 0 } }),
+  ];
+  assert.deepEqual(dueTipNags(gigs, today).map((g) => g.id), ['half']);
+  assert.deepEqual(monthTotals(gigs, '2026-11'), { count: 2, sums: { EUR: 200200 } });
+});
+
+test('a map from Firestore reads as an object', () => {
+  const v = { mapValue: { fields: { ana: { integerValue: '10000' }, bob: { integerValue: '0' } } } };
+  assert.deepEqual(decodeValue(v), { ana: 10000, bob: 0 });
+  assert.deepEqual(decodeValue({ mapValue: {} }), {});
 });

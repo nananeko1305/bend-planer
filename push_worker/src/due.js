@@ -10,6 +10,35 @@ const MAX_TIP_NAGS = 3;
 export const TIP_DAYS = 7;
 
 const on = (gig) => gig.cancelled !== true;
+
+// How a gig shares its tip, as in the app (lib/models/gig.dart): 'equal' is
+// one total for the band, 'own' an entry per player in `tips`. Gigs from
+// before 1.2 have neither field and are 'equal'.
+const playersOf = (gig) => (Array.isArray(gig.players) ? gig.players : []);
+const isOwn = (gig) => gig.tipSplit === 'own';
+
+/** The players' own entries that count: someone unticked later drops out. */
+function ownEntries(gig) {
+  const players = playersOf(gig);
+  return Object.entries(gig.tips && typeof gig.tips === 'object' ? gig.tips : {}).filter(
+    ([uid, minor]) => Number.isInteger(minor) && (players.length === 0 || players.includes(uid)),
+  );
+}
+
+/** The band's tip of a gig: the total, or the sum of the entries; null while none. */
+export function gigTipTotal(gig) {
+  if (!isOwn(gig)) return Number.isInteger(gig.tipMinor) ? gig.tipMinor : null;
+  const entries = ownEntries(gig);
+  return entries.length === 0 ? null : entries.reduce((sum, [, minor]) => sum + minor, 0);
+}
+
+/** Nothing left to enter: the total, or an entry from every player (0 counts). */
+export function tipComplete(gig) {
+  if (!isOwn(gig)) return Number.isInteger(gig.tipMinor);
+  const entered = new Set(ownEntries(gig).map(([uid]) => uid));
+  const players = playersOf(gig);
+  return players.length === 0 ? entered.size > 0 : players.every((uid) => entered.has(uid));
+}
 const byStart = (a, b) => (a.start ?? '').localeCompare(b.start ?? '');
 
 /** In the evening: tomorrow's gigs nobody has been reminded of. */
@@ -35,7 +64,7 @@ export function dueTipNags(gigs, today) {
       (g) =>
         on(g) &&
         g.hasTip === true &&
-        !Number.isInteger(g.tipMinor) &&
+        !tipComplete(g) &&
         g.date < today &&
         g.date >= oldest &&
         (g.tipNags ?? 0) < MAX_TIP_NAGS &&
@@ -68,7 +97,7 @@ export function monthTotals(gigs, month) {
     if (!on(g) || !g.date.startsWith(`${month}-`)) continue;
     count++;
     const c = g.currency === 'RSD' ? 'RSD' : 'EUR';
-    sums[c] = (sums[c] ?? 0) + (g.priceMinor ?? 0) + (Number.isInteger(g.tipMinor) ? g.tipMinor : 0);
+    sums[c] = (sums[c] ?? 0) + (g.priceMinor ?? 0) + (gigTipTotal(g) ?? 0);
   }
   return { count, sums };
 }
